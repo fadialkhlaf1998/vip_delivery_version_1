@@ -1,0 +1,65 @@
+{
+  "1": "*********** المقدمة ***********",
+  "start": "ابدأ",
+
+
+  "2": "*********** تسجيل الدخول ***********",
+  "email": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "email_is_required": "البريد الإلكتروني مطلوب",
+  "must_be_at_least_6_character": "يجب ألا تقل عن 6 أحرف",
+  "log_in": "تسجيل الدخول",
+
+
+  "3": "*********** الصفحة الرئيسية ***********",
+  "car_receipt": "استلام السيارة",
+  "car_delivery": "تسليم السيارة",
+  "history": "سجل",
+  "languages": "اللغة",
+
+
+  "5": "*********** سجل ***********",
+  "search": "بحث",
+  "done": "تم",
+  "in_progress": "قيد العمل",
+  "not_uploaded": "غير مرفوعة",
+
+
+  "6": "*********** العقد ***********",
+  "contract": "العقد",
+  "client_phone": "رقم هاتف العميل",
+
+
+  "7": "*********** اللغة ***********",
+  "english": "اللغة الإنجليزية",
+  "arabic": "اللغة العربية",
+
+
+  "4": "*********** استلام السيارة ***********",
+  "client_name": "اسم العميل",
+  "phone_number": "رقم الهاتف",
+  "contract_number": "رقم العقد",
+  "driver's_name": "اسم السائق",
+  "client_location": "موقع العميل",
+  "select_code": "اختر رمز",
+  "plate_number": "رقم اللوحة",
+  "upload_photos": "تحميل الصور",
+  "upload_video": "تحميل الفيديو",
+  "submit": "إرسال",
+  "driver_verification_code": "رمز التحقق الخاص بالسائق",
+  "enter_the_code": "أدخل الرمز",
+  "please_enter_the_code" : "الرجاء إدخال الرمز",
+  "signature": "التوقيع",
+  "signature_of_the_client" : "توقيع العميل",
+  "please_choose": "الرجاء الاختيار",
+  "upload_now": "تحميل الآن",
+  "save_and_upload_later": "حفظ وتحميل لاحقاً",
+  "uploaded_successfully": "تم الرفع بنجاح",
+  "saved_successfully": "تم الحفظ بنجاح",
+  "select_an_emirate": "اختر الإمارة",
+  "select_the_code": "اختر الرمز",
+
+
+  "8": "*********** تسليم السيارة ***********",
+  "car_delivered_successfully": "تم تسليم السيارة بنجاح"
+}

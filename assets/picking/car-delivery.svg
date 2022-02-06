@@ -1,0 +1,11 @@
+<svg id="car_rental_black_24dp" xmlns="http://www.w3.org/2000/svg" width="46.541" height="46.541" viewBox="0 0 46.541 46.541">
+  <g id="Group_12390" data-name="Group 12390" transform="translate(0 0)">
+    <rect id="Rectangle_3267" data-name="Rectangle 3267" width="46.541" height="46.541" fill="none"/>
+  </g>
+  <g id="Group_12392" data-name="Group 12392" transform="translate(9.573 1.69)">
+    <g id="Group_12391" data-name="Group 12391">
+      <path id="Path_13436" data-name="Path 13436" d="M27.7,9H10.2a2.02,2.02,0,0,0-1.893,1.355L5,20.32V33.892a1,1,0,0,0,1,1.016H7.989a.987.987,0,0,0,1-1V30.923h19.93v2.989a.987.987,0,0,0,1,1h1.993a.987.987,0,0,0,1-1V20.34l-3.308-9.965A2.011,2.011,0,0,0,27.7,9ZM10.54,26.937a2.431,2.431,0,1,1,2.431-2.431A2.416,2.416,0,0,1,10.54,26.937Zm16.821,0a2.431,2.431,0,1,1,2.431-2.431A2.428,2.428,0,0,1,27.361,26.937ZM7.571,18.965l2.651-7.972h17.5l2.651,7.972Z" transform="translate(-5 6.944)" fill="#fff"/>
+      <path id="Path_13437" data-name="Path 13437" d="M16.619,4.986a5.979,5.979,0,1,0,0,3.986h10.3v3.986h3.986V8.972H32.9V4.986Zm-5.64,3.986a1.993,1.993,0,1,1,1.993-1.993A2,2,0,0,1,10.979,8.972Z" transform="translate(-5 -1)" fill="#fff"/>
+    </g>
+  </g>
+</svg>
