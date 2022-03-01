@@ -10,99 +10,25 @@ import 'package:vip_delivery_version_1/const/global.dart';
 import 'package:vip_delivery_version_1/const/app_colors.dart';
 import 'package:vip_delivery_version_1/const/app_localization.dart';
 import 'package:vip_delivery_version_1/const/top_bar.dart';
+import 'package:vip_delivery_version_1/model/history.dart';
 import 'package:vip_delivery_version_1/model/image_type.dart';
 import 'package:vip_delivery_version_1/model/offline_history.dart';
-import 'package:vip_delivery_version_1/model/plate.dart';
 import 'package:vip_delivery_version_1/view/signature.dart';
 
-class CarDeliveryController extends GetxController {
+class EditContractController extends GetxController {
 
-  TextEditingController client_name = TextEditingController();
-  TextEditingController phone_number = TextEditingController();
-  TextEditingController contract_number = TextEditingController();
-  TextEditingController plate_number = TextEditingController();
+  String media_url='https://phplaravel-548447-2195842.cloudwaysapps.com/storage/images/';
   TextEditingController verification_code = TextEditingController();
-  ChewieController? chewieController ;
+  List<ImageType> imgs=<ImageType>[].obs;
+  List<ImageType> vedios=<ImageType>[].obs;
   ImagePicker image_picker = ImagePicker();
   VideoPlayerController? videoPlayerController;
-  RxString driverNameValue = "non".obs;
-  var codeValue = 0.obs;
-  RxList code = ["Select Code","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"].obs;
-  RxList code2 = ["اختر رمز","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"].obs;
-  String phone = "non";
-  var select_value = 0.obs;
-  var validate = false.obs;
-  var code_validate = true.obs;
+  ChewieController? chewieController ;
   var driver_validate = true.obs;
   var verification_validate = false.obs;
-  List <Plate> emirate = [
-    Plate("assets/emirate/abu_dhabi.svg","abu dhabi"),
-    Plate("assets/emirate/ajman.svg","ajman"),
-    Plate("assets/emirate/dubai.svg","dubai"),
-    Plate("assets/emirate/fujairah.svg","fujairah"),
-    Plate("assets/emirate/ras_al_khaimah.svg","ras al khaimah"),
-    Plate("assets/emirate/sharjah.svg","sharjah"),
-    Plate("assets/emirate/um_al_quwain.svg","um al quwain"),
-  ].obs;
-  List<ImageType> imgs=<ImageType>[].obs;
-  List<ImageType> videos=<ImageType>[].obs;
-  List<String> media=<String>[];
-  List<int> mediaTypeId=<int>[];
+  RxString driverNameValue = "non".obs;
+  var is_play = false.obs;
 
-  Future get_image_camera() async {
-     image_picker.pickImage(source: ImageSource.camera).then((recordedImage) {
-      imgs.add(ImageType(File(recordedImage!.path), false, Global.get_media_type("")));
-    });
-  }
-  Future get_image_gallery() async {
-    image_picker.pickImage(source: ImageSource.gallery).then((recordedImage) {
-      imgs.add(ImageType(File(recordedImage!.path), false, Global.get_media_type("")));
-    });
-  }
-  Future get_vedio_camera() async {
-     image_picker.pickVideo(source: ImageSource.camera).then((recordedVideo) {
-       videos.add(ImageType(File(recordedVideo!.path), false, Global.get_media_type("v")));
-      get_vedio_image(videos.last);
-    });
-  }
-  Future get_vedio_gallery() async {
-    image_picker.pickVideo(source: ImageSource.gallery).then((recordedVideo) {
-      videos.add(ImageType(File(recordedVideo!.path), false, Global.get_media_type("v")));
-      get_vedio_image(videos.last);
-    });
-  }
-  get_vedio_image(ImageType imageType) async {
-    VideoThumbnail.thumbnailData(
-      video: imageType.file.path,
-      imageFormat: ImageFormat.PNG,
-      quality: 25,
-    ).then((value) async{
-      ui.Codec codec = await ui.instantiateImageCodec(value!);
-      ui.FrameInfo frame = await codec.getNextFrame();
-      imageType.thum = RawImage(image:frame.image,fit: BoxFit.cover,);
-    });
-  }
-  driver_verification_submit(BuildContext context) {
-    if (driverNameValue == "non") {
-      driver_validate.value = false;
-    } else {
-      driver_validate.value = true;
-    }
-    if (codeValue == 0) {
-      code_validate.value = false;
-    } else {
-      code_validate.value = true;
-    }
-    if(client_name.text.isEmpty || phone_number.text.isEmpty ||
-        contract_number.text.isEmpty  ||
-        plate_number.text.isEmpty || driverNameValue.value == false) {
-      validate.value = true;
-    }
-    else {
-      validate.value = false;
-      driver_verification_code(context);
-    }
-  }
   driver_verification_code(BuildContext context) {
     return showGeneralDialog(
       context: context,
@@ -216,33 +142,101 @@ class CarDeliveryController extends GetxController {
     }
     else {
       verification_validate.value = false;
-      for(int i=0;i<imgs.length;i++){
-        media.add(imgs[i].file.path);
-        mediaTypeId.add(imgs[i].mediaType.id);
-      }
-      for(int i=0;i<videos.length;i++){
-        media.add(videos[i].file.path);
-        mediaTypeId.add(videos[i].mediaType.id);
-      }
-      Global.offline_contract.add(OfflineHistory(
-          id: -1,
-          clientName: client_name.text,
-          clientPhone:phone,
-          contractNumber: contract_number.text,
-          carPlate: code[codeValue.value] + " | " + emirate[select_value.value].id + " | " + plate_number.text,
-          deliveredId: int.parse(driverNameValue.value),
-          delivered: Global.get_driver_name_by_id(driverNameValue.toString()),
-          receiverId: -1,
-          receiver: "",
-          statusId: 1,
-          status: "Deliver",
-          deliverDate: DateTime.now().toString(),
-          receiveDate: "",
-          media:media,
-          mediaTypeId:mediaTypeId,
-      ));
-      Get.to(() => Signature());
+      Get.back();
+      verification_validate.value = true;
     }
+  }
+  Future get_image_camera() async {
+    image_picker.pickImage(source: ImageSource.camera).then((recordedImage) {
+      imgs.add(ImageType(File(recordedImage!.path), false, Global.get_media_type("")));
+    });
+  }
+  Future get_image_gallery() async {
+    image_picker.pickImage(source: ImageSource.gallery).then((recordedImage) {
+      imgs.add(ImageType(File(recordedImage!.path), false, Global.get_media_type("")));
+    });
+  }
+  Future get_vedio_camera() async {
+    image_picker.pickVideo(source: ImageSource.camera).then((recordedVideo) {
+      vedios.add(ImageType(File(recordedVideo!.path), false, Global.get_media_type("v")));
+      get_vedio_image(vedios.last);
+    });
+  }
+  Future get_vedio_gallery() async {
+    image_picker.pickVideo(source: ImageSource.gallery).then((recordedVideo) {
+      vedios.add(ImageType(File(recordedVideo!.path), false, Global.get_media_type("v")));
+      get_vedio_image(vedios.last);
+    });
+  }
+  get_vedio_image(ImageType imageType) async {
+    VideoThumbnail.thumbnailData(
+      video: imageType.file.path,
+      imageFormat: ImageFormat.PNG,
+      quality: 25,
+    ).then((value) async{
+      ui.Codec codec = await ui.instantiateImageCodec(value!);
+      ui.FrameInfo frame = await codec.getNextFrame();
+      imageType.thum = RawImage(image:frame.image,fit: BoxFit.cover,);
+    });
+  }
+  submit(History history,BuildContext context){
+    try {
+      if (driverNameValue == "non") {
+        driver_validate.value = false;
+      } else {
+        driver_validate.value = true;
+      }
+      if(verification_validate.value){
+        List<String> media=<String>[];
+        List<int> mediaTypeId=<int>[];
+        for(int i=0;i<imgs.length;i++){
+          media.add(imgs[i].file.path);
+          mediaTypeId.add(imgs[i].mediaType.id);
+        }
+        for(int i=0;i<vedios.length;i++){
+          media.add(vedios[i].file.path);
+          mediaTypeId.add(vedios[i].mediaType.id);
+        }
+        Global.offline_contract.add(OfflineHistory(
+            id: history.id,
+            clientName: history.clientName,
+            clientPhone:history.clientPhone,
+            contractNumber: history.contractNumber,
+            carPlate: history.carPlate,
+            deliveredId: history.deliveredId,
+            delivered: history.delivered,
+            receiverId: int.parse(driverNameValue.value),
+            receiver: Global.get_driver_name_by_id(driverNameValue.toString()),
+            statusId: 2,
+            status: "Receive",
+            deliverDate: history.deliverDate,
+            receiveDate: DateTime.now().toString(),
+            media:media,
+            mediaTypeId:mediaTypeId
+        ));
+        Get.to(() => Signature())!.then((value) {
+          clear();
+        });
+      } else {
+        TopBar().error_top_bar(
+            context,
+            App_Localization.of(context)!.translate("please_enter_the_code")
+        );
+      }
+    } catch(e) {
+      TopBar().error_top_bar(
+          context,
+          App_Localization.of(context)!.translate("please_enter_the_code")
+      );
+    }
+  }
+  clear() {
+    verification_code.clear();
+    driverNameValue.value = "non";
+    verification_validate.value = true;
+    driver_validate.value = true;
+    imgs.clear();
+    vedios.clear();
   }
 
 }

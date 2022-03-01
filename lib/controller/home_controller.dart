@@ -7,7 +7,6 @@ class HomeController extends GetxController {
   var select_nav_bar = 1.obs;
   var select_value = 0.obs;
   String? value = "non";
-
   List languages = [
     {
       "name":"English",
@@ -16,4 +15,5 @@ class HomeController extends GetxController {
       "name":"Arabic",
       "id":"ar"}
   ].obs;
+
 }

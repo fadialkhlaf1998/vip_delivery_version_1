@@ -8,6 +8,7 @@ class LoginController extends GetxController {
   TextEditingController password = TextEditingController();
   var validate = false.obs;
   var isHidden = true.obs;
+  var is_loading = false.obs;
 
   visible_password() {
     isHidden.value = !isHidden.value;
@@ -22,6 +23,7 @@ class LoginController extends GetxController {
     }
     else {
       validate.value = false;
+      is_loading.value = true;
       Get.offAll(()=>Home());
     }
   }

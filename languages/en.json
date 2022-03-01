@@ -1,6 +1,7 @@
 {
   "1": "*********** introduction ***********",
   "start": "Start",
+  "welcome": "Welcome",
 
 
   "2": "*********** Login ***********",
@@ -18,29 +19,32 @@
   "languages": "Language",
 
 
-  "5": "*********** History ***********",
+  "4": "*********** History ***********",
   "search": "Search",
   "done": "DONE",
   "in_progress": "IN PROGRESS",
   "not_uploaded": "NOT UPLOADED",
+  "no_data" : "no data here",
+  "search_not_match" : "The search does not match your input",
 
 
-  "6": "*********** Contract ***********",
+  "5": "*********** Contract ***********",
   "contract": "Contract",
   "client_phone": "Client Phone",
+  "car_delivery_Ph_Vi" : "Car Delivery Photos/Videos",
+  "car_receipt_Ph_Vi" : "Car Receipt Photos/Videos",
 
 
-  "7": "*********** language ***********",
+  "6": "*********** language ***********",
   "english": "English",
   "arabic": "Arabic",
 
 
-  "4": "*********** Car Receipt ***********",
+  "7": "*********** car delivery ***********",
   "client_name": "Client Name",
   "phone_number": "Phone Number",
   "contract_number": "Contract Number",
   "driver's_name": "Driver Name",
-  "client_location": "Client Location",
   "select_code": "Select Code",
   "plate_number": "Plate Number",
   "upload_photos": "Upload Photos",
@@ -48,19 +52,43 @@
   "submit": "SUBMIT",
   "driver_verification_code": "Driver Verification Code",
   "enter_the_code": "Enter The Code",
-  "please_enter_the_code" : "Please Enter The Code",
+  "please_enter_the_code" : "your code is not correct",
+  "close" : "close",
+  "photos" : "Photos",
+  "videos": "Videos",
+  "select_an_emirate" : "select an emirate",
+  "camera" : "Camera",
+  "gallery" : "Gallery",
+  "code_emirate_plate" : "Code/Emirate/Plate Number",
+
+
+  "8": "*********** Car Receipt ***********",
+  "car_delivered_successfully": "car delivered successfully",
+  "search2" : "SEARCH",
+  "data_not_correct": "the data is not correct",
+  "car_received_recently": "this car has been received recently",
+
+
+  "9": "*********** Signature ***********",
   "signature": "Signature",
-  "signature_of_the_client" : "Signature Of The Client",
   "please_choose": "Please Choose",
   "upload_now": "Upload now",
   "save_and_upload_later": "Save and upload later",
   "uploaded_successfully": "uploaded successfully",
   "saved_successfully": "saved successfully",
-  "select_an_emirate": "Select An Emirate",
-  "select_the_code": "Select The Code",
+  "click_here": "Click Here",
+  "upload_failed": "Upload Failed",
+  "check_phone" : "please check your phone number",
+  "next": "Next",
+  "driver": "Driver",
+  "client": "Client",
 
 
+  "10": "*********** No Internet ***********",
+  "no_internet": "No Internet Connection",
+  "reload" : "Reload",
 
-  "8": "*********** car delivery ***********",
-  "car_delivered_successfully": "car delivered successfully"
+
+  "11": "*********** Edit Contract ***********",
+  "edit_contract": "Edit Contract"
 }

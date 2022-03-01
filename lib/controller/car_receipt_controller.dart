@@ -1,240 +1,105 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:vip_delivery_version_1/const/app_colors.dart';
 import 'package:vip_delivery_version_1/const/app_localization.dart';
 import 'package:vip_delivery_version_1/const/top_bar.dart';
-import 'package:vip_delivery_version_1/view/home.dart';
-import 'package:whiteboard/whiteboard.dart';
+import 'package:vip_delivery_version_1/controller/api.dart';
+import 'package:vip_delivery_version_1/controller/intro_controller.dart';
+import 'package:vip_delivery_version_1/model/history.dart';
+import 'package:vip_delivery_version_1/model/plate.dart';
 
 class CartReceiptController extends GetxController {
 
-  TextEditingController client_name = TextEditingController();
-  TextEditingController phone_number = TextEditingController();
-  TextEditingController contract_number = TextEditingController();
+  IntroController introController = Get.find();
+  TextEditingController client_phone = TextEditingController();
   TextEditingController plate_number = TextEditingController();
-  TextEditingController verification_code = TextEditingController();
-  TextEditingController client_location = TextEditingController();
-  WhiteBoardController whiteBoardController = WhiteBoardController();
-  RxString driverNameValue = "non".obs;
-  RxList drivers_name = ["Maya0","Maya1","Maya2","Maya3"].obs;
+  TextEditingController contract_number = TextEditingController();
+  List<History> history = <History>[];
+  List<History> in_progress = <History>[];
+  var selected = 0.obs;
+  var client_validate = false.obs;
+  var plate_validate = false.obs;
+  var code_validate = true.obs;
+  var contract_validate = false.obs;
+  String phone = "non";
   var codeValue = 0.obs;
+  var codeValue2 = "A".obs;
   RxList code = ["Select Code","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"].obs;
   RxList code2 = ["اختر رمز","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"].obs;
   var select_value = 0.obs;
-  var validate = false.obs;
-  var code_validate = true.obs;
-  var driver_validate = true.obs;
-  var verification_validate = false.obs;
-  var choose = false.obs;
-  List emirate = [
-    "assets/emirate/abu dhabi.svg", "assets/emirate/ajman.svg",
-    "assets/emirate/dubai.svg", "assets/emirate/fujairah.svg",
-    "assets/emirate/ras al khaimah.svg", "assets/emirate/sharjah.svg",
-    "assets/emirate/um al quwain.svg"
+  List <Plate> emirate = [
+    Plate("assets/emirate/abu_dhabi.svg","ABU DHABI"),
+    Plate("assets/emirate/ajman.svg","AJMAN"),
+    Plate("assets/emirate/dubai.svg","DUBAI"),
+    Plate("assets/emirate/fujairah.svg","FUJAIRAH"),
+    Plate("assets/emirate/ras_al_khaimah.svg","RAS AL KHAIMAH"),
+    Plate("assets/emirate/sharjah.svg","SHARJAH"),
+    Plate("assets/emirate/um_al_quwain.svg","UMM AL QUWAIN"),
   ].obs;
+  var is_loading = false.obs;
 
-  submit(BuildContext context) {
-    if (driverNameValue == "non") {
-      driver_validate.value = false;
-    } else {
-      driver_validate.value = true;
+  phone_submit(BuildContext context) {
+    if(client_phone.text.isEmpty) {
+      client_validate.value = true;
     }
+    else {
+      client_validate.value = false;
+      submit_button(context);
+    }
+  }
+  plate_submit(BuildContext context) {
     if (codeValue == 0) {
       code_validate.value = false;
     } else {
       code_validate.value = true;
     }
-    if(client_name.text.isEmpty || phone_number.text.isEmpty ||
-       contract_number.text.isEmpty  ||
-       plate_number.text.isEmpty || driverNameValue.value == false ||
-       client_location.text.isEmpty) {
-      validate.value = true;
+    if (plate_number.text.isEmpty || code_validate.value == false) {
+      plate_validate.value = true;
     }
     else {
-      validate.value = false;
-      driver_verification_code(context);
+      plate_validate.value = false;
+      submit_button(context);
     }
   }
-
-  driver_verification_code(BuildContext context) {
-    return showGeneralDialog(
-        context: context,
-      barrierLabel: "",
-      barrierDismissible: true,
-      transitionDuration: Duration(milliseconds: 500),
-      pageBuilder: (BuildContext context, __, ___){
-          return GestureDetector(
-            onTap: () {
-              Get.back();
-            },
-            child: Container(
-            color: AppColors.main.withOpacity(0.95),
-            child: Dialog(
-              backgroundColor: AppColors.main2,
-              child: Container(
-                height: 200,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10,right: 10),
-                      child: Text(
-                        !choose.value ?
-                        App_Localization.of(context)!.translate("driver_verification_code")
-                            : App_Localization.of(context)!.translate("please_choose"),
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 15
-                        ),),
-                    ),
-                    SizedBox(height: 20),
-                    !choose.value ?
-                    Center(
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * 0.7,
-                        decoration: BoxDecoration(
-                          color: AppColors.main,
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: TextField(
-                          keyboardType: TextInputType.number,
-                          style: TextStyle(color: AppColors.main3),
-                          controller: verification_code,
-                          cursorColor: Colors.white,
-                          textAlign: TextAlign.center,
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.only(left: 5,right: 5),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.transparent),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: Colors.transparent),
-                            ),
-                            hintText: App_Localization.of(context)!.translate("enter_the_code"),
-                            hintStyle: TextStyle(color: AppColors.main3,fontSize: 13),
-                          ),
-                        ),
-                      ),
-                    ) :
-                    Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              //todo something
-                              TopBar().success_top_bar(
-                                  context,App_Localization.of(context)!.translate("uploaded_successfully"));
-                              Get.off(() => Home());
-                              choose.value = false;
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.6,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  color: AppColors.main,
-                                  borderRadius: BorderRadius.circular(5)
-                              ),
-                              child: Center(
-                                child: Text(
-                                  App_Localization.of(context)!.translate("upload_now"),
-                                  style: TextStyle(
-                                      color: AppColors.main3,
-                                      fontSize: 15
-                                  ),),
-                              ),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          GestureDetector(
-                            onTap: () {
-                              //todo something
-                              TopBar().success_top_bar(
-                                  context,App_Localization.of(context)!.translate("saved_successfully"));
-                              Get.off(() => Home());
-                              choose.value = false;
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.6,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                  color: AppColors.main,
-                                  borderRadius: BorderRadius.circular(5)
-                              ),
-                              child: Center(
-                                child: Text(
-                                  App_Localization.of(context)!.translate("save_and_upload_later"),
-                                  style: TextStyle(
-                                      color: AppColors.main3,
-                                      fontSize: 15
-                                  ),),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 15),
-                    !choose.value ?
-                    GestureDetector(
-                      onTap: () {
-                        verification_submit(context);
-                      },
-                      child: Center(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.3,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: AppColors.turquoise,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: Center(
-                            child: Text(
-                              App_Localization.of(context)!.translate("submit"),
-                              style: TextStyle(color: Colors.white,fontSize: 13),),
-                          ),
-                        ),
-                      ),
-                    ) : Center(),
-                  ],
-                ),
-              ),
-            )
-      ),
-          );
-          },
-      transitionBuilder: (_, anim, __, child) {
-        Tween<Offset> tween;
-        if (anim.status == AnimationStatus.reverse) {
-          tween = Tween(begin: Offset(-1, 0), end: Offset.zero);
-        } else {
-          tween = Tween(begin: Offset(1, 0), end: Offset.zero);
+  contract_submit(BuildContext context) {
+    if(contract_number.text.isEmpty) {
+      contract_validate.value = true;
+    }
+    else {
+      contract_validate.value = false;
+      submit_button(context);
+    }
+  }
+  submit_button(BuildContext context) {
+    is_loading.value = true;
+    API.get_history(
+        selected == 0 ? phone : selected == 1 ? code[codeValue.value] + " | " + emirate[select_value.value].id + " | " + plate_number.text : contract_number.text)
+        .then((value) {
+      if (value.length == 0) {
+        is_loading.value = false;
+        TopBar().error_top_bar(context,
+          App_Localization.of(context)!.translate("data_not_correct"));
+      }else {
+        if(value.first.status != "Received") {
+          history.addAll(value);
+          is_loading.value = false;
+          in_progress = history.where((i) => i.status!="Received").toList();
+        }else {
+          TopBar().error_top_bar(context,
+                App_Localization.of(context)!.translate("car_received_recently"));
+            is_loading.value = false;
         }
-
-        return SlideTransition(
-          position: tween.animate(anim),
-          child: FadeTransition(
-            opacity: anim,
-            child: child,
-          ),
-        );
-      },
-    );
+      }
+    });
   }
-
-  verification_submit(BuildContext context) {
-    if(verification_code.text.isEmpty) {
-      verification_validate.value = true;
-      TopBar().error_top_bar(
-        context,App_Localization.of(context)!.translate("please_enter_the_code"));
-    }
-    else {
-      verification_validate.value = false;
-      Get.back();
-      choose.value = true;
-    }
+  clear_textfields() {
+    client_phone.clear();
+    plate_number.clear();
+    contract_number.clear();
+    in_progress.clear();
+    history.clear();
+    is_loading.value = false;
+    selected.value = 0;
+    codeValue.value = 0;
+    select_value.value = 0;
   }
-
-
 }

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
-import 'package:vip_delivery_version_1/const/Global.dart';
+import 'package:vip_delivery_version_1/const/global.dart';
 import 'package:vip_delivery_version_1/const/app_localization.dart';
 import 'package:vip_delivery_version_1/view/introduction.dart';
-
 import 'const/app_colors.dart';
 
 void main() {

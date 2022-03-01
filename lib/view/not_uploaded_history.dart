@@ -1,59 +1,61 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 import 'package:vip_delivery_version_1/const/app_colors.dart';
 import 'package:vip_delivery_version_1/const/app_localization.dart';
-import 'package:vip_delivery_version_1/controller/car_receipt_controller.dart';
-import 'package:vip_delivery_version_1/controller/contract_controller.dart';
 import 'package:vip_delivery_version_1/controller/history_controller.dart';
-import 'package:vip_delivery_version_1/model/contract_image.dart';
-import 'package:vip_delivery_version_1/model/history.dart';
+import 'package:vip_delivery_version_1/controller/not_uploaded_history_controller.dart';
+import 'package:vip_delivery_version_1/model/offline_history.dart';
 
-class Contract extends StatefulWidget {
-  History history;
-  List<ContractImage> contract_image;
-  Contract(this.history,this.contract_image);
+
+class NotUploadedHistory extends StatefulWidget {
+  OfflineHistory offlineHistory;
+
+  NotUploadedHistory(this.offlineHistory);
 
   @override
-  State<Contract> createState() => _ContractState(this.history,this.contract_image);
+  State<NotUploadedHistory> createState() => _NotUploadedHistoryState(this.offlineHistory);
 }
 
-class _ContractState extends State<Contract>{
-  History history;
-  List<ContractImage> contract_image;
-  ContractController contractController = Get.put(ContractController());
-  CartReceiptController cartReceiptController = Get.find();
+class _NotUploadedHistoryState extends State<NotUploadedHistory> with SingleTickerProviderStateMixin{
+  OfflineHistory offlineHistory;
+  NotUploadedHistController notUploadedHistController = Get.put(NotUploadedHistController());
   HistoryController historyController = Get.find();
-
-  _ContractState(this.history,this.contract_image) {
-    for(int i=0;i<contract_image.length;i++){
-      if(contract_image[i].status == 1){
-        contractController.deliver_image.add(contract_image[i]);
-      }else {
-        contractController.receipt_image.add(contract_image[i]);
-      }
-    }
-  }
+  _NotUploadedHistoryState(this.offlineHistory) {}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:  SafeArea(
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          color: AppColors.main,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                _header(context),
-                _body(context)
-              ],
+        body: Obx(()=> SafeArea(
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            color: AppColors.main,
+            child: SingleChildScrollView(
+              child: !notUploadedHistController.is_loading.value ?
+              Column(
+                children: [
+                  _header(context),
+                  _body(context),
+                  _footer(context),
+                  SizedBox(height: 30)
+                ],
+              ) :
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    child: Center(child: CircularProgressIndicator(color: AppColors.main3,)),
+                  )
+                ],
+              ),
             ),
           ),
-        ),
-      )
+        ),)
     );
   }
 
@@ -64,9 +66,9 @@ class _ContractState extends State<Contract>{
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height * 0.28,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(15),
-              bottomRight: Radius.circular(15)),
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(15),
+                  bottomRight: Radius.circular(15)),
               image: DecorationImage(
                   image: AssetImage("assets/home/history.png"),
                   fit: BoxFit.fitWidth
@@ -93,16 +95,6 @@ class _ContractState extends State<Contract>{
                       fontSize: 25
                   ),
                 ),
-                historyController.introController.temp.length != 0 || historyController.search.text.isNotEmpty ?
-                Container(
-                  width: 20,
-                  height: 20,
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: history.status == "Received" ?
-                          AppColors.green : AppColors.yellow
-                  ),
-                ) :
                 Container(
                   width: 20,
                   height: 20,
@@ -120,6 +112,30 @@ class _ContractState extends State<Contract>{
       ],
     );
   }
+  _footer(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        notUploadedHistController.submit(context, offlineHistory);
+      },
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.9,
+        height: 50,
+        decoration: BoxDecoration(
+            color: AppColors.turquoise,
+            borderRadius: BorderRadius.circular(5)
+        ),
+        child: Center(
+          child: Text(
+            App_Localization.of(context)!.translate("submit"),
+            style: TextStyle(
+                color: Colors.white,
+                fontSize: 18
+            ),
+          ),
+        ),
+      ),
+    );
+  }
   _body(BuildContext context) {
     return Column(
       children: [
@@ -127,86 +143,15 @@ class _ContractState extends State<Contract>{
         _plate(context),
         SizedBox(height: 15,),
         _contract_number(context),
-        SizedBox(height: 15,),
-        _client_name(context),
+        // SizedBox(height: 15,),
+        // _client_name(context),
         SizedBox(height: 15,),
         _client_phone(context),
         SizedBox(height: 15,),
         _driver_name(context),
         SizedBox(height: 10,),
-        contractController.deliver_image.length > 0 ?
-        Column(
-          children: [
-            Container(
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: Row(
-                children: [
-                  Text(
-                    App_Localization.of(context)!.translate("car_delivery_Ph_Vi"),
-                    style: TextStyle(
-                        color: AppColors.main3,
-                        fontSize: 18
-                    ),),
-                ],
-              ),
-            ),
-            SizedBox(height: 10,),
-            _deliver_images()
-          ],
-        ) : Center(),
-        historyController.introController.temp.length != 0 || historyController.search.text.isNotEmpty ?
-        Column(
-          children: [
-            history.status == "Received" ?
-            Column(
-              children: [
-                SizedBox(height: 10,),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Row(
-                    children: [
-                      Text(
-                        App_Localization.of(context)!.translate("car_receipt_Ph_Vi"),
-                        style: TextStyle(
-                            color: AppColors.main3,
-                            fontSize: 18
-                        ),),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 10,),
-                _receiper_images(),
-              ],
-            ) : Center(),
-          ],
-        ) :
-        Column(
-          children: [
-            contractController.receipt_image.length > 0 &&
-                historyController.select_history.value == 0 ?
-            Column(
-              children: [
-                SizedBox(height: 10,),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: Row(
-                    children: [
-                      Text(
-                        App_Localization.of(context)!.translate("car_receipt_Ph_Vi"),
-                        style: TextStyle(
-                            color: AppColors.main3,
-                            fontSize: 18
-                        ),),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 10,),
-                _receiper_images(),
-              ],
-            ) : Center(),
-          ],
-        ),
-        SizedBox(height: 30,),
+        _images_video_list(),
+        SizedBox(height: 15,),
       ],
     );
   }
@@ -234,20 +179,27 @@ class _ContractState extends State<Contract>{
   //             child: Center(
   //                 child:
   //                 Text(
-  //                   history.carPlate.substring(0,1),
-  //                   //history.status,
+  //                   offlineHistory.status,
+  //                   //cartReceiptController.code[4],
   //                   style: TextStyle(
   //                       fontSize: 20
   //                   ),)),
   //           ),
   //           Container(
   //             width: MediaQuery.of(context).size.width * 0.25,
+  //             //height: 50,
   //             child: Center(
   //                 child: Text(
-  //               history.carPlate.substring(1,history.carPlate.length),
-  //               //     history.carPlate,
-  //               style: TextStyle(fontSize: 20),
-  //             )),
+  //                   offlineHistory.carPlate,
+  //                   //cartReceiptController.code[4],
+  //                   style: TextStyle(fontSize: 20),
+  //                 )),
+  //             // Center(
+  //             //   child:
+  //             //   SvgPicture.asset(
+  //             //     cartReceiptController.emirate[2],
+  //             //     color: Colors.black,
+  //             //   ),),
   //           ),
   //           Container(
   //               height: 40,
@@ -261,7 +213,7 @@ class _ContractState extends State<Contract>{
   //               child: Center(
   //                   child:
   //                   Text(
-  //                     history.contractNumber,
+  //                     offlineHistory.contractNumber,
   //                     style: TextStyle(
   //                         fontSize: 20
   //                     ),))
@@ -296,7 +248,7 @@ class _ContractState extends State<Contract>{
               child: Row(
                 children: [
                   Text(
-                    history.carPlate,
+                    offlineHistory.carPlate,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20
@@ -334,7 +286,7 @@ class _ContractState extends State<Contract>{
               child: Row(
                 children: [
                   Text(
-                    history.delivered,
+                    offlineHistory.delivered,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20
@@ -371,8 +323,7 @@ class _ContractState extends State<Contract>{
               padding: const EdgeInsets.only(left: 12,right: 12),
               child: Row(
                 children: [
-                  Text(
-                   history.clientName,
+                  Text("Feras Feras",
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20
@@ -409,7 +360,8 @@ class _ContractState extends State<Contract>{
               padding: const EdgeInsets.only(left: 12,right: 12),
               child: Row(
                 children: [
-                  Text( history.clientPhone,
+                  Text(
+                    offlineHistory.clientPhone,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20
@@ -446,7 +398,7 @@ class _ContractState extends State<Contract>{
               padding: const EdgeInsets.only(left: 12,right: 12),
               child: Row(
                 children: [
-                  Text(history.contractNumber,
+                  Text(offlineHistory.contractNumber,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20
@@ -459,117 +411,58 @@ class _ContractState extends State<Contract>{
       ),
     );
   }
-  _deliver_images() {
+  _images_video_list(){
     return Container(
         height: 100,
         width: MediaQuery.of(context).size.width * 0.9,
         child: ListView.builder(
-            itemCount: contractController.deliver_image.length,
+            itemCount: offlineHistory.media.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (ctx,index){
               return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: (){
-                    if(contractController.deliver_image[index].mediaUrl!.endsWith(".mp4")){
-                      contractController.videoPlayerController =
-                      VideoPlayerController.network(
-                          contractController.media_url + contractController.deliver_image[index].mediaUrl.toString())
-                        ..initialize().then((_) {
-                          contractController.videoPlayerController!.play();
-                          Get.back();
-                          _show_video(context);
-                        });
-                      _laoding_video(context);
-                    }else {
-                      _show_image(context, contractController.deliver_image[index].mediaUrl.toString());
-                    }
-                  },
-                  child: contractController.deliver_image[index].mediaUrl!.endsWith(".mp4") ?
-                  Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 2,color: AppColors.main3),
-                        borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Center(
-                        child: Icon(
-                          Icons.video_call_outlined,
-                          color: Colors.white,size: 50,)),
-                  ) :
-                  Container(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: (){
+                      if(offlineHistory.media[index].endsWith(".mp4")){
+                        notUploadedHistController.videoPlayerController =
+                        VideoPlayerController.file(
+                            File(offlineHistory.media[index].toString()))
+                          ..initialize().then((_) {
+                            notUploadedHistController.videoPlayerController !.play();
+                            Get.back();
+                            _show_video(context);
+                          });
+                        _laoding_video(context);
+                      }else{
+                        _show_image(context, offlineHistory.media[index]);
+                      }
+                    },
+                    child: offlineHistory.media[index].toString().endsWith('.mp4') ?
+                    Container(
                       height: 100,
                       width: 100,
                       decoration: BoxDecoration(
-                          border: Border.all(width: 2,color: AppColors.main3),
-                          borderRadius: BorderRadius.circular(15),
-                          image: DecorationImage(
-                              image: NetworkImage(
-                                  contractController.media_url+contractController.deliver_image[index].mediaUrl.toString()
-                              ),
-                              fit: BoxFit.cover
-                          )
-                      )
-                  ),
-                ),
-              );
-            })
-    );
-  }
-  _receiper_images() {
-    return Container(
-        height: 100,
-        width: MediaQuery.of(context).size.width*0.9,
-        child: ListView.builder(
-            itemCount: contractController.receipt_image.length,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (ctx,index){
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: (){
-                    if(contractController.receipt_image[index].mediaUrl!.endsWith(".mp4")){
-                      contractController.videoPlayerController =
-                      VideoPlayerController.network(
-                          contractController.media_url + contractController.receipt_image[index].mediaUrl.toString())
-                        ..initialize().then((_) {
-                          contractController.videoPlayerController!.play();
-                          Get.back();
-                          _show_video(context);
-                        });
-                      _laoding_video(context);
-                    }else {
-                      _show_image(context, contractController.receipt_image[index].mediaUrl.toString());
-                    }
-                  },
-                  child: contractController.receipt_image[index].mediaUrl!.endsWith(".mp4") ?
-                  Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 2,color: AppColors.main3),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Center(
-                        child: Icon(
-                          Icons.video_call_outlined,
-                          color: Colors.white,size: 50,)),
-                  ) :
-                  Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
+                        border: Border.all(width: 2,color: AppColors.main3),
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: Center(
+                          child: Icon(
+                            Icons.video_call_outlined,
+                            color: Colors.white,size: 50,)),
+                    ) :
+                    Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
                         border: Border.all(width: 2,color: AppColors.main3),
                         borderRadius: BorderRadius.circular(15),
                         image: DecorationImage(
-                            image: NetworkImage(
-                                contractController.media_url+contractController.receipt_image[index].mediaUrl.toString()                            ),
-                            fit: BoxFit.cover
+                          image: FileImage(File(offlineHistory.media[index])),
+                          fit: BoxFit.cover
                         )
-                    )
+                      )
+                    ),
                   ),
-                ),
               );
             })
     );
@@ -581,7 +474,7 @@ class _ContractState extends State<Contract>{
       barrierDismissible: true,
       transitionDuration: Duration(milliseconds: 500),
       pageBuilder: (BuildContext context, __, ___){
-        return GestureDetector(
+        return  GestureDetector(
             onTap: () {
               Get.back();
             },
@@ -599,7 +492,8 @@ class _ContractState extends State<Contract>{
                           Container(
                               width: MediaQuery.of(context).size.width,
                               height: MediaQuery.of(context).size.height,
-                              child: Image.network(contractController.media_url+path,fit: BoxFit.cover),
+                              color: Colors.red,
+                              child: Image.file(File(path),fit: BoxFit.cover,),
                           ),
                         ],
                       ),
@@ -663,7 +557,7 @@ class _ContractState extends State<Contract>{
                           Container(
                             height: MediaQuery.of(context).size.height * 0.8,
                             width: MediaQuery.of(context).size.width,
-                            child: VideoPlayer(contractController.videoPlayerController!),
+                            child: VideoPlayer(notUploadedHistController.videoPlayerController!),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10),
@@ -672,15 +566,17 @@ class _ContractState extends State<Contract>{
                               children: [
                                 Obx(() => GestureDetector(
                                   onTap: () {
-                                    contractController.is_play.value = !contractController.is_play.value;
-                                    if(contractController.videoPlayerController!.value.isPlaying || contractController.is_play.value){
-                                      contractController.videoPlayerController!.pause();
-                                    }
-                                    else {
-                                      contractController.videoPlayerController!.play();
-                                    }
+                                   setState(() {
+                                     notUploadedHistController.is_play.value = !notUploadedHistController.is_play.value;
+                                     if(notUploadedHistController.videoPlayerController!.value.isPlaying || notUploadedHistController.is_play.value){
+                                       notUploadedHistController.videoPlayerController!.pause();
+                                          }
+                                     else {
+                                       notUploadedHistController.videoPlayerController!.play();
+                                     }
+                                   });
                                   },
-                                  child: !contractController.is_play.value ?
+                                  child: !notUploadedHistController.is_play.value?
                                   Icon(Icons.pause,color: Colors.white, size: 30,):
                                   Icon(Icons.play_arrow,color: Colors.white, size: 30),
                                 ))
@@ -701,7 +597,7 @@ class _ContractState extends State<Contract>{
                       size: 25,
                     ),
                   ),
-                )
+                ),
               ],
             )
 
@@ -763,4 +659,5 @@ class _ContractState extends State<Contract>{
       },
     );
   }
+
 }

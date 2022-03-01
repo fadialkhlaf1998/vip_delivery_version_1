@@ -26,7 +26,8 @@ class Login extends StatelessWidget {
               )
           ),
           child: SingleChildScrollView(
-            child: Column(
+            child: !loginController.is_loading.value ?
+            Column(
               children: [
                 SizedBox(height: 80),
                 _header(context),
@@ -35,6 +36,12 @@ class Login extends StatelessWidget {
                 SizedBox(height: 50),
                 _login_btn(context),
               ],
+            ) :
+            Container(
+              height: MediaQuery.of(context).size.height,
+              child: Center(
+                child: CircularProgressIndicator(color: AppColors.main3,),
+              ),
             ),
           ),
         ),
@@ -140,7 +147,7 @@ class Login extends StatelessWidget {
       },
       child: Container(
         width: MediaQuery.of(context).size.width * 0.9,
-        height: MediaQuery.of(context).size.height * 0.08,
+        height: 50,
         color: Colors.white,
         child: Center(
           child: Text(App_Localization.of(context)!.translate("log_in"),

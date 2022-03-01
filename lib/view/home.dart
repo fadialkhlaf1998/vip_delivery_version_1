@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:vip_delivery_version_1/const/Global.dart';
+import 'package:vip_delivery_version_1/const/global.dart';
 import 'package:vip_delivery_version_1/const/app_colors.dart';
 import 'package:vip_delivery_version_1/const/app_localization.dart';
+import 'package:vip_delivery_version_1/controller/car_receipt_controller.dart';
+import 'package:vip_delivery_version_1/controller/edit_contract_controller.dart';
+import 'package:vip_delivery_version_1/controller/history_controller.dart';
 import 'package:vip_delivery_version_1/controller/home_controller.dart';
+import 'package:vip_delivery_version_1/controller/intro_controller.dart';
 import 'package:vip_delivery_version_1/view/car_delivery.dart';
 import 'package:vip_delivery_version_1/view/car_recipt.dart';
 import 'package:vip_delivery_version_1/view/history.dart';
@@ -18,18 +22,21 @@ class Home extends StatelessWidget {
   }
 
   HomeController homeController = Get.put(HomeController());
+  IntroController introController = Get.find();
+  CartReceiptController cartReceiptController = Get.put(CartReceiptController());
+  EditContractController editContractController = Get.put(EditContractController());
+  HistoryController historyController = Get.put(HistoryController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
       backgroundColor: AppColors.main,
-      //key: homeController.key,
        body: Stack(
          children: [
            Container(width: MediaQuery.of(context).size.width,),
                Obx(() {
-                return homeController.select_nav_bar == 0 ? History() :
+                return homeController.select_nav_bar == 0 ? HistoryView() :
                 homeController.select_nav_bar == 1 ?  _home(context) : Center();
                }),
            Positioned(bottom: 0,child: _btnNavBar(context))
@@ -58,6 +65,9 @@ class Home extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   homeController.select_nav_bar.value = 0;
+                  introController.temp.clear();
+                  introController.histories.addAll(introController.temp);
+                  historyController.search.clear();
                 },
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -166,6 +176,8 @@ class Home extends StatelessWidget {
         GestureDetector(
           onTap: () {
             Get.to(() => CartReceipt());
+            cartReceiptController.clear_textfields();
+            editContractController.clear();
           },
           child: Container(
             width: MediaQuery.of(context).size.width * 0.7,
