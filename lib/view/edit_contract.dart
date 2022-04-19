@@ -1,6 +1,7 @@
 import 'package:chewie/chewie.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 import 'package:vip_delivery_version_1/const/global.dart';
@@ -33,6 +34,10 @@ class _EditContractState extends State<EditContract> {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return Scaffold(
         body: Obx(() => SafeArea(
           child: Container(

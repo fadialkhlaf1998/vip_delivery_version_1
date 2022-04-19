@@ -44,7 +44,7 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-        title: 'Car-Rental-Dileviry-App',
+        title: 'Car-Rental-Delivery-App',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: AppColors.main,

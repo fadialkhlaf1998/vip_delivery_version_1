@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
 import 'package:vip_delivery_version_1/const/app_colors.dart';
@@ -26,6 +27,10 @@ class _NotUploadedHistoryState extends State<NotUploadedHistory> with SingleTick
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return Scaffold(
         body: Obx(()=> SafeArea(
           child: Container(

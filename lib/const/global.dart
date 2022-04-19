@@ -26,7 +26,7 @@ class Global {
       else {
         Global.language_code="en";
       }
-      Get.updateLocale(Locale(language_code));
+     Get.updateLocale(Locale(language_code));
       return Global.language_code;
     }
     catch(e) {

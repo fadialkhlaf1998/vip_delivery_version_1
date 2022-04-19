@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:vip_delivery_version_1/const/app_colors.dart';
 import 'package:vip_delivery_version_1/const/app_localization.dart';
@@ -10,6 +11,10 @@ class NoInternet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return Scaffold(
       body: SafeArea(
         child: Container(
