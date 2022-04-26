@@ -16,9 +16,9 @@ class CarDeliver {
   String toJson() => json.encode(toMap());
 
   factory CarDeliver.fromMap(Map<String, dynamic> json) => CarDeliver(
-    message: json["message"] ?? "",
-    data: json["data"] ?? -1,
-    code: json["code"] ?? -1,
+    message: json["message"],
+    data: json["data"],
+    code: json["code"],
   );
 
   Map<String, dynamic> toMap() => {

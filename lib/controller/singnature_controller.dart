@@ -7,6 +7,9 @@ import 'package:vip_delivery_version_1/const/app_localization.dart';
 import 'package:vip_delivery_version_1/const/top_bar.dart';
 import 'package:vip_delivery_version_1/controller/api.dart';
 import 'package:vip_delivery_version_1/controller/car_delivery_controller.dart';
+import 'package:vip_delivery_version_1/controller/history_controller.dart';
+import 'package:vip_delivery_version_1/controller/new_api.dart';
+import 'package:vip_delivery_version_1/model/offline_history.dart';
 import 'package:vip_delivery_version_1/view/car_delivery.dart';
 import 'package:vip_delivery_version_1/view/home.dart';
 import 'package:vip_delivery_version_1/view/no_internet.dart';
@@ -16,6 +19,12 @@ class SignatureController extends GetxController {
 
   WhiteBoardController whiteBoardController = WhiteBoardController();
   CarDeliveryController carDeliveryController = Get.find();
+  HistoryController historyController = Get.find();
+
+  bool driverSignatureCheck = false;
+  bool clientSignatureCheck = false;
+  int mediaLength = 0;
+  int length = 0;
 
   File? driver;
   File? client;
@@ -75,7 +84,7 @@ class SignatureController extends GetxController {
                         padding: const EdgeInsets.only(left: 10,right: 10),
                         child: Text(
                           App_Localization.of(context)!.translate("please_choose"),
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Colors.white,
                               fontSize: 15
                           ),),
@@ -88,6 +97,8 @@ class SignatureController extends GetxController {
                             GestureDetector(
                               onTap: () {
                                 clear_textfields();
+                                //TODO
+                                /** Upload now Function */
                                 upload_now_button(context);
                                 this.dispose();
                               },
@@ -111,7 +122,7 @@ class SignatureController extends GetxController {
                             SizedBox(height: 10),
                             GestureDetector(
                               onTap: () {
-                                clear_textfields();
+                                //clear_textfields();
                                 upload_save_latter_button(context);
                                 this.dispose();
                               },
@@ -174,25 +185,26 @@ class SignatureController extends GetxController {
   upload_now_button(BuildContext context) async {
     try{
       is_loading.value = true;
-      API.internet().then((internet) {
+      NewApi.internet().then((internet) {
         if(internet){
-          API.upload_offLine_history(Global.offline_contract.last).then((value) {
+          NewApi.upload_offLine_history(Global.offline_contract.last).then((value) {
             if(value){
               is_loading.value = true;
               success.value = true;
               TopBar().success_top_bar(
                   context,App_Localization.of(context)!.translate("uploaded_successfully"));
-               Get.off(() => Home());
+                  historyController.getHistory();
+                  Get.offAll(() => Home());
             } else {
               is_loading.value = true;
               TopBar().error_top_bar(
                 context,App_Localization.of(context)!.translate("upload_failed"));
-              Get.off(() => Home());
+                Get.offAll(() => Home());
             }
           });
         }else {
           Get.to(() => NoInternet())!.then((value) {
-            upload_now_button(context);
+           // upload_now_button(context);
           });
         }
       });
@@ -206,19 +218,37 @@ class SignatureController extends GetxController {
       is_loading.value = true;
       TopBar().error_top_bar(context,
           App_Localization.of(context)!.translate("check_phone"));
-      Get.off(()=> CarDelivery());
+      Get.offAll(()=> CarDelivery());
     }else {
       try{
         is_loading.value = true;
+        // Global.offline_contract.add(OfflineHistory(
+        //   id: -1,
+        //   clientName: carDeliveryController.client_name.text,
+        //   clientPhone: carDeliveryController.phone,
+        //   contractNumber: carDeliveryController.contract_number.text,
+        //   carPlate: carDeliveryController.code[carDeliveryController.codeValue.value] + " | " + carDeliveryController.emirate[carDeliveryController.select_value.value].id + " | " + carDeliveryController.plate_number.text,
+        //   deliveredId: int.parse(carDeliveryController.driverNameValue.value),
+        //   delivered: Global.get_driver_name_by_id(carDeliveryController.driverNameValue.toString()),
+        //   receiverId: -1,
+        //   receiver: "",
+        //   statusId: 1,
+        //   status: "Deliver",
+        //   deliverDate: DateTime.now().toString(),
+        //   receiveDate: "",
+        //   media: carDeliveryController.media,
+        //   mediaTypeId: carDeliveryController.mediaTypeId,
+        // ));
         Global.save_offline_contract();
         success.value = true;
         TopBar().success_top_bar(context, App_Localization.of(context)!.translate("saved_successfully"));
         clear_textfields();
-        Get.off(() => Home());
+        Get.offAll(() => Home());
       }
       catch(e) {
         TopBar().error_top_bar(
             context,"error");
+        print(e);
       }
     }
   }

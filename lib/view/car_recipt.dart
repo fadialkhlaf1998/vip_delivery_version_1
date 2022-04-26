@@ -38,7 +38,7 @@ class CartReceipt extends StatelessWidget {
                   _header(context),
                   SingleChildScrollView(
                     physics: NeverScrollableScrollPhysics(),
-                    child: cartReceiptController.in_progress.length > 0?
+                    child: cartReceiptController.in_progress.isNotEmpty ?
                     Column(
                       children: [
                         _search_history_list(context),
@@ -147,6 +147,10 @@ class CartReceipt extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   cartReceiptController.selected.value = 0;
+                  cartReceiptController.plate_number.clear();
+                  cartReceiptController.contract_number.clear();
+                  cartReceiptController.codeValue.value = 0;
+                  cartReceiptController.select_value.value = 0;
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.27,
@@ -178,6 +182,9 @@ class CartReceipt extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   cartReceiptController.selected.value = 1;
+                  cartReceiptController.client_phone.clear();
+                  cartReceiptController.contract_number.clear();
+
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.27,
@@ -209,6 +216,11 @@ class CartReceipt extends StatelessWidget {
               GestureDetector(
                 onTap: () {
                   cartReceiptController.selected.value = 2;
+                  cartReceiptController.client_phone.clear();
+                  cartReceiptController.codeValue.value = 0;
+                  cartReceiptController.plate_number.clear();
+                  cartReceiptController.select_value.value = 0;
+
                 },
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.27,
@@ -416,7 +428,7 @@ class CartReceipt extends StatelessWidget {
                 Container(
                   width: MediaQuery.of(context).size.width * 0.85,
                   child: ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     scrollDirection: Axis.vertical,
                     shrinkWrap: true,
                     itemCount: cartReceiptController.emirate.length,
@@ -608,10 +620,11 @@ class CartReceipt extends StatelessWidget {
               return GestureDetector(
                   onTap: (){
                     cartReceiptController.is_loading.value = true;
-                    API.get_contract_image(cartReceiptController.in_progress[index].id.toString()).then((images) {
-                      Get.to(() => EditContract(cartReceiptController.in_progress[index],images))!.then((value) {
-                        cartReceiptController.is_loading.value = false;
-                      });
+                    // API.get_contract_image(cartReceiptController.in_progress[index].id.toString()).then((images) {
+                    //
+                    // });
+                    Get.to(() => EditContract(cartReceiptController.in_progress[index]))!.then((value) {
+                      cartReceiptController.is_loading.value = false;
                     });
                   },
                   child: Container(
@@ -639,7 +652,7 @@ class CartReceipt extends StatelessWidget {
                                   fontSize: 18),),
                           ),
                           Text(
-                            DateFormat('yyyy-MM-dd').format(DateTime.parse(cartReceiptController.in_progress[index].deliverDate)),
+                            DateFormat('yyyy-MM-dd').format(DateTime.parse(cartReceiptController.in_progress[index].deliverDate.toString())),
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18),),

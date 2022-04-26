@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:vip_delivery_version_1/archive/chauffer.dart';
 import 'package:vip_delivery_version_1/const/global.dart';
 import 'package:vip_delivery_version_1/model/car-deliver.dart';
-import 'package:vip_delivery_version_1/model/chauffer.dart';
 import 'package:vip_delivery_version_1/model/contract_image.dart';
 import 'package:vip_delivery_version_1/model/history.dart';
 import 'package:vip_delivery_version_1/model/mediatype.dart';
@@ -13,20 +13,20 @@ import 'package:vip_delivery_version_1/model/offline_history.dart';
 class API {
   static String url='https://phplaravel-548447-2195842.cloudwaysapps.com';
 
-  static Future<List<Media>> get_media(String state)async{
-    var headers = {
-      'Accept': 'application/json'
-    };
-    var request = http.Request('GET', Uri.parse('https://phplaravel-548447-2195842.cloudwaysapps.com/api/getMediaTypesList?state='+state));
-    request.headers.addAll(headers);
-    http.StreamedResponse response = await request.send();
-    if (response.statusCode == 200) {
-      return  MediaTypeList.fromJson(await response.stream.bytesToString()).data;
-    }
-    else {
-      return <Media>[];
-    }
-  }
+  // static Future<List<Media>> get_media(String state)async{
+  //   var headers = {
+  //     'Accept': 'application/json'
+  //   };
+  //   var request = http.Request('GET', Uri.parse('https://phplaravel-548447-2195842.cloudwaysapps.com/api/getMediaTypesList?state='+state));
+  //   request.headers.addAll(headers);
+  //   http.StreamedResponse response = await request.send();
+  //   if (response.statusCode == 200) {
+  //     return  MediaTypeList.fromJson(await response.stream.bytesToString()).data;
+  //   }
+  //   else {
+  //     return <Media>[];
+  //   }
+  // }
   static Future<List<Chauffeur>> get_chauffer()async{
     var headers = {
       'Accept': 'application/json'
@@ -111,25 +111,25 @@ class API {
       return -1;
     }
   }
-  static Future<List<History>> get_history(String filter)async{
-    var headers = {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-    };
-    var request = http.Request('POST', Uri.parse(url+'/api/getHistory'));
-    request.body = json.encode({
-      "filter": filter
-    });
-    request.headers.addAll(headers);
-    http.StreamedResponse response = await request.send();
-    if (response.statusCode == 200) {
-      var json=await response.stream.bytesToString();
-      return HistoryList.fromJson(json).data;
-    }
-    else {
-      return <History>[];
-    }
-  }
+  // static Future<List<History>> get_history(String filter)async{
+  //   var headers = {
+  //     'Accept': 'application/json',
+  //     'Content-Type': 'application/json',
+  //   };
+  //   var request = http.Request('POST', Uri.parse(url+'/api/getHistory'));
+  //   request.body = json.encode({
+  //     "filter": filter
+  //   });
+  //   request.headers.addAll(headers);
+  //   http.StreamedResponse response = await request.send();
+  //   if (response.statusCode == 200) {
+  //     var json=await response.stream.bytesToString();
+  //     return HistoryList.fromJson(json).data;
+  //   }
+  //   else {
+  //     return <History>[];
+  //   }
+  // }
   static Future<List<ContractImage>> get_contract_image(String contract_id)async{
     var headers = {
       'Content-Type': 'application/json',

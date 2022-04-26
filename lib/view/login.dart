@@ -8,7 +8,6 @@ import 'package:vip_delivery_version_1/const/app_localization.dart';
 import 'package:vip_delivery_version_1/controller/login_controller.dart';
 
 class Login extends StatelessWidget {
-  Login({Key? key}) : super(key: key);
 
   LoginController loginController = Get.put(LoginController());
 
@@ -148,7 +147,7 @@ class Login extends StatelessWidget {
   _login_btn(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        loginController.login(context);
+        loginController.newLogin(context);
       },
       child: Container(
         width: MediaQuery.of(context).size.width * 0.9,

@@ -13,7 +13,7 @@ class ShowVideo extends StatelessWidget {
   CarDeliveryController carDeliveryController = Get.find();
   EditContractController editContractController = Get.find();
 
-  ShowVideo(this.file,this.tag);
+  ShowVideo(this.file, this.tag);
 
   @override
   Widget build(BuildContext context) {

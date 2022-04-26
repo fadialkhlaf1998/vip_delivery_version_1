@@ -9,26 +9,27 @@ import 'package:vip_delivery_version_1/const/app_colors.dart';
 import 'package:vip_delivery_version_1/const/app_localization.dart';
 import 'package:vip_delivery_version_1/controller/car_delivery_controller.dart';
 import 'package:vip_delivery_version_1/controller/edit_contract_controller.dart';
+import 'package:vip_delivery_version_1/controller/new_api.dart';
 import 'package:vip_delivery_version_1/model/contract_image.dart';
 import 'package:vip_delivery_version_1/model/history.dart';
 import 'package:vip_delivery_version_1/view/show_vedio.dart';
 
 class EditContract extends StatefulWidget {
   History history;
-  List<ContractImage> contract_image;
-  EditContract(this.history,this.contract_image);
+  // List<ContractImage> contract_image;
+  EditContract(this.history);
 
   @override
-  State<EditContract> createState() => _EditContractState(this.history,this.contract_image);
+  State<EditContract> createState() => _EditContractState(this.history);
 }
 
 class _EditContractState extends State<EditContract> {
   History history;
-  List<ContractImage> contract_image;
+  //List<ContractImage> contract_image;
   EditContractController editContractController = Get.put(EditContractController());
   CarDeliveryController carDeliveryController = Get.put(CarDeliveryController());
 
-  _EditContractState(this.history,this.contract_image) {
+  _EditContractState(this.history) {
     editContractController.clear();
   }
 
@@ -39,21 +40,21 @@ class _EditContractState extends State<EditContract> {
       DeviceOrientation.portraitDown,
     ]);
     return Scaffold(
-        body: Obx(() => SafeArea(
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            color: AppColors.main,
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  _header(context),
-                  _body(context)
-                ],
+          body: Obx(() => SafeArea(
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              color: AppColors.main,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    _header(context),
+                    _body(context)
+                  ],
+                ),
               ),
             ),
-          ),
-        ),)
+          ),)
     );
   }
 
@@ -63,7 +64,7 @@ class _EditContractState extends State<EditContract> {
         Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height * 0.28,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(15),
                   bottomRight: Radius.circular(15)),
@@ -124,7 +125,7 @@ class _EditContractState extends State<EditContract> {
         child: Center(
           child: Text(
             App_Localization.of(context)!.translate("submit"),
-            style: TextStyle(
+            style:const TextStyle(
                 color: Colors.white,
                 fontSize: 18
             ),
@@ -140,22 +141,22 @@ class _EditContractState extends State<EditContract> {
         _plate(context),
         SizedBox(height: 15,),
         _contract_number(context),
-        // SizedBox(height: 15,),
-        // _client_name(context),
+         SizedBox(height: 15,),
+         _client_name(context),
         SizedBox(height: 15,),
         _client_phone(context),
         SizedBox(height: 20,),
         _driver_name(context),
         SizedBox(height: 10,),
-        contract_image.length > 0 ?
+        history.deliveredImages.isNotEmpty ?
         _old_media(context) : Center(),
         SizedBox(height: 10,),
         _images_videos(context),
         SizedBox(height:
-        editContractController.imgs.length ==0 ||
-            editContractController.vedios.length ==0 ? 10 : 10
+        editContractController.imgs.isEmpty ||
+            editContractController.vedios.isEmpty ? 10 : 10
         ),
-        editContractController.imgs.length == 0 ? Center() :
+        editContractController.imgs.isEmpty ? const Center() :
         Container(
           width: MediaQuery.of(context).size.width * 0.9,
           child: Row(
@@ -169,11 +170,11 @@ class _EditContractState extends State<EditContract> {
             ],
           ),
         ),
-        SizedBox(height: editContractController.imgs.length ==0 ? 0 : 5),
-        editContractController.imgs.length == 0 ? Center() :
+        SizedBox(height: editContractController.imgs.isEmpty ? 0 : 5),
+        editContractController.imgs.isEmpty ? const Center() :
         _add_photo(context),
-        SizedBox(height: editContractController.imgs.length == 0 ? 0: 10),
-        editContractController.vedios.length == 0 ? Center() :
+        SizedBox(height: editContractController.imgs.isEmpty ? 0: 10),
+        editContractController.vedios.isEmpty ? const Center() :
         Container(
           width: MediaQuery.of(context).size.width * 0.9,
           child: Row(
@@ -187,12 +188,12 @@ class _EditContractState extends State<EditContract> {
             ],
           ),
         ),
-        SizedBox(height: editContractController.vedios.length == 0 ? 0 : 5),
-        editContractController.vedios.length == 0 ? Center() :
+        SizedBox(height: editContractController.vedios.isEmpty ? 0 : 5),
+        editContractController.vedios.isEmpty ? Center() :
         _add_vedio(context),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         _footer(context),
-        SizedBox(height: 30,),
+        const SizedBox(height: 30,),
       ],
     );
   }
@@ -324,7 +325,7 @@ class _EditContractState extends State<EditContract> {
             App_Localization.of(context)!.translate("driver's_name"),
             style: TextStyle(color: AppColors.main3,fontSize: 15),),
         ),
-        value: editContractController.driverNameValue.value =="non" ? null: editContractController.driverNameValue.value,
+        value: editContractController.driverNameValue.value == "non" ? null : editContractController.driverNameValue.value,
         icon: Icon(Icons.arrow_drop_down , size: 25,color: AppColors.main3),
         items: Global.chauffeur.map((newvalue) {
           return DropdownMenuItem(
@@ -333,7 +334,7 @@ class _EditContractState extends State<EditContract> {
               width: MediaQuery.of(context).size.width * 0.45,
               padding: const EdgeInsets.all(5),
               child: Text(
-                newvalue.name.toString(),
+                newvalue.title.toString(),
                 style: TextStyle(
                     color: AppColors.main3
                 ),),
@@ -372,7 +373,8 @@ class _EditContractState extends State<EditContract> {
               padding: const EdgeInsets.only(left: 12,right: 12),
               child: Row(
                 children: [
-                  Text("Feras Feras",
+                  Text(
+                    history.clientName,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20
@@ -464,28 +466,31 @@ class _EditContractState extends State<EditContract> {
         height: 100,
         width: MediaQuery.of(context).size.width*0.9,
         child: ListView.builder(
-            itemCount: widget.contract_image.length,
+            itemCount: history.deliveredImages.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (ctx,index){
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: (){
-                    if(widget.contract_image[index].mediaUrl!.endsWith(".mp4")){
+                    print(NewApi.url + '/uploads/' + history.deliveredImages[index].link);
+                    if(history.deliveredImages[index].link.endsWith(".mp4")){
+                      print('show video ');
                       editContractController.videoPlayerController =
                       VideoPlayerController.network(
-                          editContractController.media_url + widget.contract_image[index].mediaUrl.toString())
+                          NewApi.url + '/uploads/' + history.deliveredImages[index].link
+                      )
                         ..initialize().then((_) {
                           editContractController.videoPlayerController!.play();
-                          Get.back();
+                           Get.back();
                           _show_old_video(context);
                         });
-                      _laoding_video(context);
+                     _laoding_video(context);
                     }else {
-                      _show_old_image(context, widget.contract_image[index].mediaUrl.toString());
+                    _show_old_image(context, history.deliveredImages[index].link);
                     }
                   },
-                  child: widget.contract_image[index].mediaUrl!.endsWith(".mp4") ?
+                  child: history.deliveredImages[index].mediaTypeId == 5 ?
                   Container(
                     height: 100,
                     width: 100,
@@ -496,7 +501,7 @@ class _EditContractState extends State<EditContract> {
                     child: Center(
                         child: Icon(
                           Icons.video_call_outlined,
-                          color: Colors.white,size: 50,)),
+                          color: Colors.white,size: 35,)),
                   ) :
                   Container(
                       height: 100,
@@ -506,7 +511,7 @@ class _EditContractState extends State<EditContract> {
                           borderRadius: BorderRadius.circular(15),
                           image: DecorationImage(
                               image: NetworkImage(
-                                  editContractController.media_url+widget.contract_image[index].mediaUrl.toString()),
+                                  NewApi.url + '/uploads/' + history.deliveredImages[index].link),
                               fit: BoxFit.cover
                           )
                       )
@@ -541,7 +546,7 @@ class _EditContractState extends State<EditContract> {
                           Container(
                               width: MediaQuery.of(context).size.width,
                               height: MediaQuery.of(context).size.height,
-                              child: Image.network(editContractController.media_url+path,fit: BoxFit.cover),
+                              child: Image.network(NewApi.url + '/uploads/' + path,fit: BoxFit.contain),
                           ),
                         ],
                       ),
@@ -579,6 +584,8 @@ class _EditContractState extends State<EditContract> {
       },
     );
   }
+
+
   _show_old_video(BuildContext context) {
     return showGeneralDialog(
       context: context,
@@ -605,7 +612,7 @@ class _EditContractState extends State<EditContract> {
                           Container(
                             height: MediaQuery.of(context).size.height * 0.8,
                             width: MediaQuery.of(context).size.width,
-                            child:VideoPlayer(editContractController.videoPlayerController!),
+                            child: VideoPlayer(editContractController.videoPlayerController!),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(10),
@@ -864,7 +871,7 @@ class _EditContractState extends State<EditContract> {
                                         padding: const EdgeInsets.only(left: 10,right: 10),
                                         child: GestureDetector(
                                           onTap: () {
-                                            Get.off(() => EditContract(widget.history, widget.contract_image));
+                                           // Get.off(() => EditContract(widget.history, widget.contract_image));
                                           },
                                           child: Container(
                                             height: 50,

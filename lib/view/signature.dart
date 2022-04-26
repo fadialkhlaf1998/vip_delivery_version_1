@@ -6,6 +6,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:vip_delivery_version_1/const/global.dart';
 import 'package:vip_delivery_version_1/const/app_colors.dart';
 import 'package:vip_delivery_version_1/const/app_localization.dart';
+import 'package:vip_delivery_version_1/controller/car_delivery_controller.dart';
 import 'package:vip_delivery_version_1/controller/singnature_controller.dart';
 import 'package:vip_delivery_version_1/view/home.dart';
 import 'package:whiteboard/whiteboard.dart';
@@ -75,8 +76,10 @@ class _SignatureState extends State<Signature> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    signatureController.clear_textfields();
-                    Get.off(()=> Home());
+                    //signatureController.clear_textfields();
+                    //Get.off(()=> Home());
+                    Global.offline_contract.removeLast();
+                    Get.back();
                   },
                   child: Icon(Icons.arrow_back_ios,color: Colors.white,size: 25,),
                 ),
@@ -202,7 +205,7 @@ class _SignatureState extends State<Signature> {
                           color: signatureController.driver == null ||signatureController.client != null?
                           AppColors.main3 : AppColors.main2,
                           borderRadius: BorderRadius.circular(15),
-                            boxShadow: [
+                            boxShadow: const [
                               BoxShadow(
                                   color: Colors.white,
                                   spreadRadius: 0.1,
@@ -258,8 +261,15 @@ class _SignatureState extends State<Signature> {
                               File(path).writeAsBytes(list);
                               setState(() {
                                 signatureController.driver=File(path);
-                                Global.offline_contract.last.media.add(path);
-                                Global.offline_contract.last.mediaTypeId.add(Global.get_media_type_by_name("Chauffeur Signature"));
+                                signatureController.length = Global.offline_contract.last.media.length;
+                                if (!signatureController.driverSignatureCheck){
+                                  Global.offline_contract.last.media.add(path);
+                                  Global.offline_contract.last.mediaTypeId.add(7);
+                                  signatureController.driverSignatureCheck = true;
+                                }else{
+                                  Global.offline_contract.last.media[signatureController.length] = path;
+                                  //Global.offline_contract.last.mediaTypeId[length] = 7;
+                                }
                                 signatureController.is_driver.value = false;
                               });
                             }else {
@@ -275,8 +285,13 @@ class _SignatureState extends State<Signature> {
                               File(path).writeAsBytes(list);
                               setState(() {
                                 signatureController.client=File(path);
-                                Global.offline_contract.last.media.add(path);
-                                Global.offline_contract.last.mediaTypeId.add(Global.get_media_type_by_name("Client Signature"));
+                                if(!signatureController.clientSignatureCheck){
+                                  Global.offline_contract.last.media.add(path);
+                                  Global.offline_contract.last.mediaTypeId.add(6);
+                                  signatureController.clientSignatureCheck = true;
+                                }else{
+                                  Global.offline_contract.last.media[signatureController.length + 1] = path;
+                                }
                               });
                             }
                           });

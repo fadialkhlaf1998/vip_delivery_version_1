@@ -40,21 +40,21 @@ class OfflineHistory {
   String toJson() => json.encode(toMap());
 
   factory OfflineHistory.fromMap(Map<String, dynamic> json) => OfflineHistory(
-    id: json["id"] ?? -1,
-    clientName: json["client_name"] ?? "",
-    clientPhone: json["client_phone"] ?? "",
-    contractNumber: json["contract_number"] ?? "",
-    carPlate: json["car_plate"] ?? "",
-    deliveredId: json["delivered_id"] ?? -1,
-    delivered: json["delivered"] ?? "",
-    receiverId: json["receiver_id"] ?? -1,
-    receiver: json["receiver"] ?? "",
-    statusId: json["status_id"] ?? -1,
-    status: json["status"] ?? "",
-    deliverDate: json["deliver_date"] ?? "",
-    receiveDate: json["receive_date"] ?? "",
-    media: json["media"] ?? "",
-    mediaTypeId: json["mediaTypeId"] ?? "",
+    id: json["id"],
+    clientName: json["client_name"]==null?"":json["client_name"],
+    clientPhone: json["client_phone"],
+    contractNumber: json["contract_number"],
+    carPlate: json["car_plate"],
+    deliveredId: json["delivered_id"],
+    delivered: json["delivered"],
+    receiverId: json["receiver_id"],
+    receiver: json["receiver"],
+    statusId: json["status_id"],
+    status: json["status"],
+    deliverDate: json["deliver_date"],
+    receiveDate: json["receive_date"],
+    media: json["media"],
+    mediaTypeId: json["mediaTypeId"],
   );
 
   Map<String, dynamic> toMap() => {

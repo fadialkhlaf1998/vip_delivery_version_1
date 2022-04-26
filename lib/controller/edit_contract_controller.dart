@@ -36,82 +36,89 @@ class EditContractController extends GetxController {
       barrierDismissible: true,
       transitionDuration: Duration(milliseconds: 500),
       pageBuilder: (BuildContext context, __, ___){
-        return GestureDetector(
-          onTap: () {
-            Get.back();
+        return WillPopScope(
+          onWillPop: ()async{
+            driverNameValue.value = "non";
+            return true;
           },
-          child: Container(
-              color: AppColors.main.withOpacity(0.95),
-              child: Dialog(
-                backgroundColor: AppColors.main2,
-                child: Container(
-                  height: 200,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10,right: 10),
-                        child: Text(
-                          App_Localization.of(context)!.translate("driver_verification_code"),
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15
-                          ),),
-                      ),
-                      SizedBox(height: 20),
-                      Center(
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * 0.7,
-                          decoration: BoxDecoration(
-                            color: AppColors.main,
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                          child: TextField(
-                            keyboardType: TextInputType.number,
-                            style: TextStyle(color: AppColors.main3),
-                            controller: verification_code,
-                            cursorColor: Colors.white,
-                            textAlign: TextAlign.center,
-                            decoration: InputDecoration(
-                              contentPadding: EdgeInsets.only(left: 5,right: 5),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.transparent),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.transparent),
-                              ),
-                              hintText: App_Localization.of(context)!.translate("enter_the_code"),
-                              hintStyle: TextStyle(color: AppColors.main3,fontSize: 13),
-                            ),
-                          ),
+          child: GestureDetector(
+            onTap: () {
+             driverNameValue.value = "non";
+             Get.back();
+            },
+            child: Container(
+                color: AppColors.main.withOpacity(0.95),
+                child: Dialog(
+                  backgroundColor: AppColors.main2,
+                  child: Container(
+                    height: 200,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 10,right: 10),
+                          child: Text(
+                            App_Localization.of(context)!.translate("driver_verification_code"),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 15
+                            ),),
                         ),
-                      ),
-                      SizedBox(height: 15),
-                      GestureDetector(
-                        onTap: () {
-                          verification_submit(context);
-                        },
-                        child: Center(
+                        SizedBox(height: 20),
+                        Center(
                           child: Container(
-                            width: MediaQuery.of(context).size.width * 0.3,
-                            height: 40,
+                            width: MediaQuery.of(context).size.width * 0.7,
                             decoration: BoxDecoration(
-                              color: AppColors.turquoise,
+                              color: AppColors.main,
                               borderRadius: BorderRadius.circular(5),
                             ),
-                            child: Center(
-                              child: Text(
-                                App_Localization.of(context)!.translate("submit"),
-                                style: TextStyle(color: Colors.white,fontSize: 13),),
+                            child: TextField(
+                              keyboardType: TextInputType.number,
+                              style: TextStyle(color: AppColors.main3),
+                              controller: verification_code,
+                              cursorColor: Colors.white,
+                              textAlign: TextAlign.center,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.only(left: 5,right: 5),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.transparent),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.transparent),
+                                ),
+                                hintText: App_Localization.of(context)!.translate("enter_the_code"),
+                                hintStyle: TextStyle(color: AppColors.main3,fontSize: 13),
+                              ),
                             ),
                           ),
                         ),
-                      )
-                    ],
+                        SizedBox(height: 15),
+                        GestureDetector(
+                          onTap: () {
+                            verification_submit(context);
+                          },
+                          child: Center(
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.3,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: AppColors.turquoise,
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  App_Localization.of(context)!.translate("submit"),
+                                  style: TextStyle(color: Colors.white,fontSize: 13),),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              )
+                )
+            ),
           ),
         );
       },
@@ -209,7 +216,7 @@ class EditContractController extends GetxController {
             receiver: Global.get_driver_name_by_id(driverNameValue.toString()),
             statusId: 2,
             status: "Receive",
-            deliverDate: history.deliverDate,
+            deliverDate: history.deliverDate.toString(),
             receiveDate: DateTime.now().toString(),
             media:media,
             mediaTypeId:mediaTypeId

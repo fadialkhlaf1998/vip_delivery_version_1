@@ -148,8 +148,8 @@ class _NotUploadedHistoryState extends State<NotUploadedHistory> with SingleTick
         _plate(context),
         SizedBox(height: 15,),
         _contract_number(context),
-        // SizedBox(height: 15,),
-        // _client_name(context),
+        SizedBox(height: 15,),
+         _client_name(context),
         SizedBox(height: 15,),
         _client_phone(context),
         SizedBox(height: 15,),
@@ -328,7 +328,8 @@ class _NotUploadedHistoryState extends State<NotUploadedHistory> with SingleTick
               padding: const EdgeInsets.only(left: 12,right: 12),
               child: Row(
                 children: [
-                  Text("Feras Feras",
+                  Text(
+                    offlineHistory.clientName,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20

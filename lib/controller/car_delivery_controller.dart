@@ -35,6 +35,7 @@ class CarDeliveryController extends GetxController {
   var code_validate = true.obs;
   var driver_validate = true.obs;
   var verification_validate = false.obs;
+  RawImage? imagePath ;
   List <Plate> emirate = [
     Plate("assets/emirate/abu_dhabi.svg","abu dhabi"),
     Plate("assets/emirate/ajman.svg","ajman"),
@@ -50,24 +51,25 @@ class CarDeliveryController extends GetxController {
   List<int> mediaTypeId=<int>[];
 
   Future get_image_camera() async {
-     image_picker.pickImage(source: ImageSource.camera).then((recordedImage) {
+    image_picker.pickImage(source: ImageSource.camera, imageQuality: 85).then((recordedImage) {
       imgs.add(ImageType(File(recordedImage!.path), false, Global.get_media_type("")));
+
     });
   }
   Future get_image_gallery() async {
-    image_picker.pickImage(source: ImageSource.gallery).then((recordedImage) {
+    image_picker.pickImage(source: ImageSource.gallery, imageQuality: 85).then((recordedImage) {
       imgs.add(ImageType(File(recordedImage!.path), false, Global.get_media_type("")));
     });
   }
   Future get_vedio_camera() async {
      image_picker.pickVideo(source: ImageSource.camera).then((recordedVideo) {
-       videos.add(ImageType(File(recordedVideo!.path), false, Global.get_media_type("v")));
+       videos.add(ImageType(File(recordedVideo!.path), false, Global.get_media_type("5")));
       get_vedio_image(videos.last);
     });
   }
   Future get_vedio_gallery() async {
     image_picker.pickVideo(source: ImageSource.gallery).then((recordedVideo) {
-      videos.add(ImageType(File(recordedVideo!.path), false, Global.get_media_type("v")));
+      videos.add(ImageType(File(recordedVideo!.path), false, Global.get_media_type("5")));
       get_vedio_image(videos.last);
     });
   }
@@ -80,6 +82,8 @@ class CarDeliveryController extends GetxController {
       ui.Codec codec = await ui.instantiateImageCodec(value!);
       ui.FrameInfo frame = await codec.getNextFrame();
       imageType.thum = RawImage(image:frame.image,fit: BoxFit.cover,);
+      imagePath = imageType.thum;
+
     });
   }
   driver_verification_submit(BuildContext context) {
@@ -215,6 +219,8 @@ class CarDeliveryController extends GetxController {
           context,App_Localization.of(context)!.translate("please_enter_the_code"));
     }
     else {
+      media.clear();
+      mediaTypeId.clear();
       verification_validate.value = false;
       for(int i=0;i<imgs.length;i++){
         media.add(imgs[i].file.path);
@@ -224,6 +230,7 @@ class CarDeliveryController extends GetxController {
         media.add(videos[i].file.path);
         mediaTypeId.add(videos[i].mediaType.id);
       }
+      print(Global.get_driver_name_by_id(driverNameValue.toString()));
       Global.offline_contract.add(OfflineHistory(
           id: -1,
           clientName: client_name.text,
@@ -241,6 +248,8 @@ class CarDeliveryController extends GetxController {
           media:media,
           mediaTypeId:mediaTypeId,
       ));
+      Get.back();
+      verification_code.clear();
       Get.to(() => Signature());
     }
   }

@@ -4,6 +4,7 @@ import 'package:video_player/video_player.dart';
 import 'package:vip_delivery_version_1/const/app_localization.dart';
 import 'package:vip_delivery_version_1/const/top_bar.dart';
 import 'package:vip_delivery_version_1/controller/api.dart';
+import 'package:vip_delivery_version_1/controller/new_api.dart';
 import 'package:vip_delivery_version_1/model/offline_history.dart';
 import 'package:vip_delivery_version_1/view/no_internet.dart';
 
@@ -15,10 +16,10 @@ class NotUploadedHistController extends GetxController {
 
   submit(BuildContext context,OfflineHistory offlineHistory){
     try{
-      API.internet().then((internet) {
+      NewApi.internet().then((internet) {
         if(internet){
           is_loading.value = true;
-          API.upload_offLine_history(offlineHistory).then((value) {
+          NewApi.upload_offLine_history(offlineHistory).then((value) {
             if(value){
                 TopBar().success_top_bar(context,
                     App_Localization.of(context)!.translate("uploaded_successfully"));

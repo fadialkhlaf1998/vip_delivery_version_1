@@ -8,34 +8,17 @@ import 'package:vip_delivery_version_1/const/app_localization.dart';
 import 'package:vip_delivery_version_1/controller/car_receipt_controller.dart';
 import 'package:vip_delivery_version_1/controller/contract_controller.dart';
 import 'package:vip_delivery_version_1/controller/history_controller.dart';
-import 'package:vip_delivery_version_1/model/contract_image.dart';
+import 'package:vip_delivery_version_1/controller/new_api.dart';
 import 'package:vip_delivery_version_1/model/history.dart';
 
-class Contract extends StatefulWidget {
-  History history;
-  List<ContractImage> contract_image;
-  Contract(this.history,this.contract_image);
+class Contract extends StatelessWidget {
 
-  @override
-  State<Contract> createState() => _ContractState(this.history,this.contract_image);
-}
-
-class _ContractState extends State<Contract>{
-  History history;
-  List<ContractImage> contract_image;
   ContractController contractController = Get.put(ContractController());
   CartReceiptController cartReceiptController = Get.find();
-  HistoryController historyController = Get.find();
 
-  _ContractState(this.history,this.contract_image) {
-    for(int i=0;i<contract_image.length;i++){
-      if(contract_image[i].status == 1){
-        contractController.deliver_image.add(contract_image[i]);
-      }else {
-        contractController.receipt_image.add(contract_image[i]);
-      }
-    }
-  }
+  HistoryController historyController = Get.find();
+  History contract;
+  Contract(this.contract);
 
   @override
   Widget build(BuildContext context) {
@@ -44,21 +27,21 @@ class _ContractState extends State<Contract>{
       DeviceOrientation.portraitDown,
     ]);
     return Scaffold(
-      body:  SafeArea(
-        child: Container(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height,
-          color: AppColors.main,
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                _header(context),
-                _body(context)
-              ],
+        body:  SafeArea(
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            color: AppColors.main,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _header(context),
+                  _body(context)
+                ],
+              ),
             ),
           ),
-        ),
-      )
+        )
     );
   }
 
@@ -69,9 +52,9 @@ class _ContractState extends State<Contract>{
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height * 0.28,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(15),
-              bottomRight: Radius.circular(15)),
+              borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(15),
+                  bottomRight: Radius.circular(15)),
               image: DecorationImage(
                   image: AssetImage("assets/home/history.png"),
                   fit: BoxFit.fitWidth
@@ -104,8 +87,8 @@ class _ContractState extends State<Contract>{
                   height: 20,
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: history.status == "Received" ?
-                          AppColors.green : AppColors.yellow
+                      color: historyController.select_history.value == 0 ?
+                      AppColors.green : AppColors.yellow
                   ),
                 ) :
                 Container(
@@ -139,7 +122,7 @@ class _ContractState extends State<Contract>{
         SizedBox(height: 15,),
         _driver_name(context),
         SizedBox(height: 10,),
-        contractController.deliver_image.length > 0 ?
+        contract.deliveredImages.isNotEmpty ?
         Column(
           children: [
             Container(
@@ -156,13 +139,13 @@ class _ContractState extends State<Contract>{
               ),
             ),
             SizedBox(height: 10,),
-            _deliver_images()
+            _deliver_images(context)
           ],
         ) : Center(),
-        historyController.introController.temp.length != 0 || historyController.search.text.isNotEmpty ?
+        historyController.introController.temp.isNotEmpty || historyController.search.text.isNotEmpty ?
         Column(
           children: [
-            history.status == "Received" ?
+            historyController.select_history.value == 0 ?
             Column(
               children: [
                 SizedBox(height: 10,),
@@ -180,14 +163,14 @@ class _ContractState extends State<Contract>{
                   ),
                 ),
                 SizedBox(height: 10,),
-                _receiper_images(),
+                _receiper_images(context),
               ],
             ) : Center(),
           ],
         ) :
         Column(
           children: [
-            contractController.receipt_image.length > 0 &&
+            contract.deliveredImages.isNotEmpty &&
                 historyController.select_history.value == 0 ?
             Column(
               children: [
@@ -206,7 +189,7 @@ class _ContractState extends State<Contract>{
                   ),
                 ),
                 SizedBox(height: 10,),
-                _receiper_images(),
+                _receiper_images(context),
               ],
             ) : Center(),
           ],
@@ -301,7 +284,7 @@ class _ContractState extends State<Contract>{
               child: Row(
                 children: [
                   Text(
-                    history.carPlate,
+                    contract.carPlate,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20
@@ -339,7 +322,7 @@ class _ContractState extends State<Contract>{
               child: Row(
                 children: [
                   Text(
-                    history.delivered,
+                    contract.delivered,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20
@@ -377,7 +360,7 @@ class _ContractState extends State<Contract>{
               child: Row(
                 children: [
                   Text(
-                   history.clientName,
+                    contract.clientName,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20
@@ -414,7 +397,8 @@ class _ContractState extends State<Contract>{
               padding: const EdgeInsets.only(left: 12,right: 12),
               child: Row(
                 children: [
-                  Text( history.clientPhone,
+                  Text(
+                    contract.clientPhone,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20
@@ -451,7 +435,8 @@ class _ContractState extends State<Contract>{
               padding: const EdgeInsets.only(left: 12,right: 12),
               child: Row(
                 children: [
-                  Text(history.contractNumber,
+                  Text(
+                    contract.contractNumber,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 20
@@ -464,46 +449,45 @@ class _ContractState extends State<Contract>{
       ),
     );
   }
-  _deliver_images() {
+  _deliver_images(context) {
     return Container(
         height: 100,
         width: MediaQuery.of(context).size.width * 0.9,
         child: ListView.builder(
-            itemCount: contractController.deliver_image.length,
+            itemCount: contract.deliveredImages.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (ctx,index){
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: (){
-                    if(contractController.deliver_image[index].mediaUrl!.endsWith(".mp4")){
+                    if(contract.deliveredImages[index].link.endsWith(".mp4")){
                       contractController.videoPlayerController =
                       VideoPlayerController.network(
-                          contractController.media_url + contractController.deliver_image[index].mediaUrl.toString())
-                        ..initialize().then((_) {
-                          contractController.videoPlayerController!.play();
-                          Get.back();
-                          _show_video(context);
-                        });
+                          NewApi.url + '/uploads/' + contract.deliveredImages[index].link
+                      );
+                      contractController.videoPlayerController!.initialize().then((_){
+                        contractController.videoPlayerController!.play();
+                        Get.back();
+                        _show_video(context);
+                      });
+
                       _laoding_video(context);
                     }else {
-                      _show_image(context, contractController.deliver_image[index].mediaUrl.toString());
+                      _show_image(context, contract.deliveredImages[index].link.toString());
                     }
                   },
-                  child: contractController.deliver_image[index].mediaUrl!.endsWith(".mp4") ?
-                  Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 2,color: AppColors.main3),
-                        borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Center(
-                        child: Icon(
-                          Icons.video_call_outlined,
-                          color: Colors.white,size: 50,)),
-                  ) :
-                  Container(
+                  child:  contract.deliveredImages[index].mediaTypeId == 5
+                      ? Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                          border: Border.all(width: 2,color: AppColors.main3),
+                          borderRadius: BorderRadius.circular(15),
+                      ),
+                    child: Icon(Icons.video_call_outlined,color: Colors.white,size: 35),
+                  )
+                  : Container(
                       height: 100,
                       width: 100,
                       decoration: BoxDecoration(
@@ -511,68 +495,56 @@ class _ContractState extends State<Contract>{
                           borderRadius: BorderRadius.circular(15),
                           image: DecorationImage(
                               image: NetworkImage(
-                                  contractController.media_url+contractController.deliver_image[index].mediaUrl.toString()
+                                  NewApi.url + '/uploads/' + contract.deliveredImages[index].link
                               ),
                               fit: BoxFit.cover
                           )
                       )
-                  ),
+                  )  ,
                 ),
               );
             })
     );
   }
-  _receiper_images() {
+  _receiper_images(context) {
     return Container(
         height: 100,
         width: MediaQuery.of(context).size.width*0.9,
         child: ListView.builder(
-            itemCount: contractController.receipt_image.length,
+            itemCount: contract.recivedImages.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (ctx,index){
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: (){
-                    if(contractController.receipt_image[index].mediaUrl!.endsWith(".mp4")){
-                      contractController.videoPlayerController =
-                      VideoPlayerController.network(
-                          contractController.media_url + contractController.receipt_image[index].mediaUrl.toString())
-                        ..initialize().then((_) {
-                          contractController.videoPlayerController!.play();
-                          Get.back();
-                          _show_video(context);
-                        });
-                      _laoding_video(context);
-                    }else {
-                      _show_image(context, contractController.receipt_image[index].mediaUrl.toString());
-                    }
+                    // if(contractController.receipt_image[index].mediaUrl!.endsWith(".mp4")){
+                    //   contractController.videoPlayerController =
+                    //   VideoPlayerController.network(
+                    //       contractController.media_url + contractController.receipt_image[index].mediaUrl.toString())
+                    //     ..initialize().then((_) {
+                    //       contractController.videoPlayerController!.play();
+                    //       Get.back();
+                    //       _show_video(context);
+                    //     });
+                    //   _laoding_video(context);
+                    // }else {
+                    //   _show_image(context, contractController.receipt_image[index].mediaUrl.toString());
+                    // }
                   },
-                  child: contractController.receipt_image[index].mediaUrl!.endsWith(".mp4") ?
-                  Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 2,color: AppColors.main3),
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    child: Center(
-                        child: Icon(
-                          Icons.video_call_outlined,
-                          color: Colors.white,size: 50,)),
-                  ) :
-                  Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                        border: Border.all(width: 2,color: AppColors.main3),
-                        borderRadius: BorderRadius.circular(15),
-                        image: DecorationImage(
-                            image: NetworkImage(
-                                contractController.media_url+contractController.receipt_image[index].mediaUrl.toString()                            ),
-                            fit: BoxFit.cover
-                        )
-                    )
+                  child: Container(
+                      height: 100,
+                      width: 100,
+                      decoration: BoxDecoration(
+                          border: Border.all(width: 2,color: AppColors.main3),
+                          borderRadius: BorderRadius.circular(15),
+                          image: DecorationImage(
+                              image: NetworkImage(
+                              NewApi.url + '/uploads/' + contract.recivedImages[index].link
+                              ),
+                              fit: BoxFit.cover
+                          )
+                      )
                   ),
                 ),
               );
@@ -602,9 +574,9 @@ class _ContractState extends State<Contract>{
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height,
-                              child: Image.network(contractController.media_url+path,fit: BoxFit.cover),
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height,
+                            child: Image.network(NewApi.url + '/uploads/' + path,fit: BoxFit.contain),
                           ),
                         ],
                       ),
@@ -769,3 +741,4 @@ class _ContractState extends State<Contract>{
     );
   }
 }
+

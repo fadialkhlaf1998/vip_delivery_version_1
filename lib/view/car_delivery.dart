@@ -14,6 +14,7 @@ import 'package:vip_delivery_version_1/const/app_colors.dart';
 import 'package:vip_delivery_version_1/const/app_localization.dart';
 import 'package:vip_delivery_version_1/controller/car_delivery_controller.dart';
 import 'package:vip_delivery_version_1/controller/edit_contract_controller.dart';
+import 'package:vip_delivery_version_1/controller/login_controller.dart';
 import 'package:vip_delivery_version_1/view/home.dart';
 import 'package:vip_delivery_version_1/view/show_vedio.dart';
 
@@ -100,6 +101,8 @@ class CarDelivery extends StatelessWidget {
   _footer(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        FocusManager.instance.primaryFocus?.unfocus();
+
         carDeliveryController.driver_verification_submit(context);
       },
       child: Container(
@@ -137,10 +140,10 @@ class CarDelivery extends StatelessWidget {
         SizedBox(height: 20,),
         _images_videos(context),
         SizedBox(height:
-        carDeliveryController.imgs.length ==0 ||
-            carDeliveryController.videos.length ==0 ? 10 : 10
+        carDeliveryController.imgs.isEmpty ||
+            carDeliveryController.videos.isEmpty ? 10 : 10
         ),
-        carDeliveryController.imgs.length ==0 ? Center() :
+        carDeliveryController.imgs.isEmpty ? const Center() :
         Container(
           width: MediaQuery.of(context).size.width * 0.9,
           child: Row(
@@ -154,11 +157,11 @@ class CarDelivery extends StatelessWidget {
             ],
           ),
         ),
-        SizedBox(height: carDeliveryController.imgs.length ==0 ? 0 : 5),
-        carDeliveryController.imgs.length ==0 ? Center() :
+        SizedBox(height: carDeliveryController.imgs.isEmpty ? 0 : 5),
+        carDeliveryController.imgs.isEmpty ? const Center() :
         _add_photo(context),
-        SizedBox(height: 10),
-        carDeliveryController.videos.length ==0 ? Center() :
+        const SizedBox(height: 10),
+        carDeliveryController.videos.isEmpty ? Center() :
         Container(
           width: MediaQuery.of(context).size.width * 0.9,
           child: Row(
@@ -282,7 +285,7 @@ class CarDelivery extends StatelessWidget {
               width: MediaQuery.of(context).size.width * 0.45,
               padding: const EdgeInsets.all(5),
               child: Text(
-                newvalue.name.toString(),
+                newvalue.title.toString(),
                 style: TextStyle(
                     color: AppColors.main3
                 ),),
@@ -340,6 +343,7 @@ class CarDelivery extends StatelessWidget {
           children: [
             GestureDetector(
               onTap: () {
+                FocusManager.instance.primaryFocus?.unfocus();
                 _btm_sheet_code(context);
               },
               child: Container(
@@ -762,7 +766,8 @@ class CarDelivery extends StatelessWidget {
                                     playedColor: Colors.blue,
                                   ),
                                 );
-                            Get.to(()=>ShowVideo(carDeliveryController.videos[index].file,"video_tag_1"));
+
+                            //    Get.to(()=>ShowVideo(carDeliveryController.videos[index].file,"video_tag_1"));
                           });
                       },
                       child: Column(
@@ -1062,6 +1067,46 @@ class CarDelivery extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  bottomSheetImagePositionList(context){
+    showModalBottomSheet(
+        context: context,
+        shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20),
+                topLeft: Radius.circular(20),
+              )
+        ),
+        builder: (context){
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.3,
+            padding: EdgeInsets.only(top: 10),
+            child: ListView.builder(
+              itemCount: 4,
+              itemBuilder: (context,index){
+                return GestureDetector(
+                  onTap: (){
+                    print(Global.media[index].title);
+
+                    print(carDeliveryController.imgs[0].mediaType.id);
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height * 0.07,
+                    child: Center(
+                        child: Text(
+                            'The car photo from ' + Global.media[index].title,
+                          style: TextStyle(fontSize: 16),
+                        )
+                    ),
+                  ),
+                );
+              },
+            ),
+          );
+        }
     );
   }
 

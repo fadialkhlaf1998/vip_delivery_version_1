@@ -9,4 +9,9 @@ class ContractController extends GetxController {
   List<ContractImage> receipt_image =<ContractImage>[];
   VideoPlayerController? videoPlayerController;
   var is_play = false.obs;
+
+
+
+
+
 }

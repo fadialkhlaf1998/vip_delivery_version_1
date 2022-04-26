@@ -15,6 +15,8 @@ class Global {
   static List<Media> video = <Media>[];
   static List<Media> signature = <Media>[];
   static List<OfflineHistory> offline_contract= <OfflineHistory>[];
+  static  String? email;
+  static  String? password;
 
   static Future<String> load_language() async {
     try {
@@ -43,22 +45,12 @@ class Global {
     });
   }
   static Media get_media_type(String id){
-    if(id=="v"){
-      return video.first;
-    }
+    // if(id=="v"){
+    //   return video.first;
+    // }
     for(int i=0;i<media.length;i++){
-      if(id==media[i].id.toString()){
+      if(id == media[i].id.toString()){
         return media[i];
-      }
-    }
-    for(int i=0;i<signature.length;i++){
-      if(id==signature[i].id.toString()){
-        return signature[i];
-      }
-    }
-    for(int i=0;i<video.length;i++){
-      if(id==video[i].id.toString()){
-        return video[i];
       }
     }
     return media.first;
@@ -66,7 +58,9 @@ class Global {
   static String get_driver_name_by_id(String id){
     for(int i=0;i<chauffeur.length;i++){
       if(chauffeur[i].id.toString()==id){
-        return chauffeur[i].name;
+        print('get chauffer name');
+        print(chauffeur[i].title);
+        return chauffeur[i].title;
       }
     }
     return "none";
@@ -74,7 +68,7 @@ class Global {
   static String get_driver_pin_by_id(String id){
     for(int i=0;i<chauffeur.length;i++){
       if(chauffeur[i].id.toString()==id){
-        return chauffeur[i].pinCode;
+        return chauffeur[i].pin;
       }
     }
     return "error";
@@ -110,6 +104,30 @@ class Global {
   static save_offline_contract(){
     SharedPreferences.getInstance().then((prefs){
       prefs.setString("offline_contract", json.encode(List<dynamic>.from(Global.offline_contract.map((x) => x.toMap()))));
+      print('save');
+    });
+  }
+
+  static saveLoginInfo(String email, String password){
+    SharedPreferences.getInstance().then((prefs){
+      prefs.setString("email", email);
+      prefs.setString("password", password);
+      print('save --------------');
+
+    });
+  }
+
+  static loadLoginInfo() async {
+    SharedPreferences.getInstance().then((prefs){
+      email = prefs.getString("email");
+      password = prefs.getString("password");
+    });
+  }
+
+  static logout(){
+    SharedPreferences.getInstance().then((prefs){
+      prefs.remove("email");
+      prefs.remove("password");
     });
   }
 

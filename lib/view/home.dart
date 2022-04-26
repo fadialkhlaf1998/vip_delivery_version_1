@@ -13,6 +13,7 @@ import 'package:vip_delivery_version_1/controller/intro_controller.dart';
 import 'package:vip_delivery_version_1/view/car_delivery.dart';
 import 'package:vip_delivery_version_1/view/car_recipt.dart';
 import 'package:vip_delivery_version_1/view/history.dart';
+import 'package:vip_delivery_version_1/view/login.dart';
 
 class Home extends StatelessWidget {
   Home () {
@@ -37,15 +38,31 @@ class Home extends StatelessWidget {
     return Scaffold(
       extendBody: true,
       backgroundColor: AppColors.main,
-       body: Stack(
-         children: [
-           Container(width: MediaQuery.of(context).size.width,),
+       body: SafeArea(
+         child: Obx(() {
+           return  Stack(
+             children: [
+               Container(width: MediaQuery.of(context).size.width,),
                Obx(() {
-                return homeController.select_nav_bar == 0 ? HistoryView() :
-                homeController.select_nav_bar == 1 ?  _home(context) : Center();
+                 return homeController.select_nav_bar.value == 0 ? HistoryView() :
+                 homeController.select_nav_bar.value == 1 ?  _home(context) : Center();
                }),
-           Positioned(bottom: 0,child: _btnNavBar(context))
-         ],
+               Positioned(bottom: 0,child: _btnNavBar(context)),
+               homeController.select_nav_bar.value == 1 ?  Positioned(
+                 top: 0,
+                 child: Container(
+                   child: IconButton(
+                     onPressed: ()async{
+                       await Global.logout();
+                       Get.offAll(()=>Login());
+                     },
+                     icon: Icon(Icons.logout, color: Colors.white,),
+                   ),
+                 ),
+               ) : Center(),
+             ],
+           );
+         })
        ),
     );
   }

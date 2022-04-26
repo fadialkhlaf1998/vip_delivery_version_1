@@ -8,7 +8,7 @@
    <application
         android:label="vip_delivery_version_1"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+       android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
             android:exported="true"

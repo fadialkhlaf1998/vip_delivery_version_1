@@ -1,5 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:vip_delivery_version_1/const/global.dart';
+import 'package:vip_delivery_version_1/controller/api.dart';
+import 'package:vip_delivery_version_1/controller/history_controller.dart';
+import 'package:vip_delivery_version_1/controller/new_api.dart';
 import 'package:vip_delivery_version_1/view/home.dart';
 
 class LoginController extends GetxController {
@@ -27,4 +31,27 @@ class LoginController extends GetxController {
       Get.offAll(()=>Home());
     }
   }
+
+  newLogin(BuildContext context){
+    NewApi.login(email.text, password.text).then((value){
+      if(value){
+        is_loading.value = true;
+        NewApi.getChauffeur().then((value) {
+          Global.chauffeur.addAll(value);
+          NewApi.getMedia().then((signatures) {
+            Global.media.addAll(signatures);
+            Global.saveLoginInfo(email.text, password.text);
+            is_loading.value = false;
+            Get.offAll(()=>Home());
+          });
+        });
+
+      }else{
+        is_loading.value = false;
+
+        print('Field');
+      }
+    });
+  }
+
 }

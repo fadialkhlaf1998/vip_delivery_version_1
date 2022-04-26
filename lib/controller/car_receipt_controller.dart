@@ -4,6 +4,7 @@ import 'package:vip_delivery_version_1/const/app_localization.dart';
 import 'package:vip_delivery_version_1/const/top_bar.dart';
 import 'package:vip_delivery_version_1/controller/api.dart';
 import 'package:vip_delivery_version_1/controller/intro_controller.dart';
+import 'package:vip_delivery_version_1/controller/new_api.dart';
 import 'package:vip_delivery_version_1/model/history.dart';
 import 'package:vip_delivery_version_1/model/plate.dart';
 
@@ -43,11 +44,13 @@ class CartReceiptController extends GetxController {
     }
     else {
       client_validate.value = false;
+      print('select  : ${selected.value}');
       submit_button(context);
     }
   }
   plate_submit(BuildContext context) {
-    if (codeValue == 0) {
+    print('select  : ${selected.value}');
+    if (codeValue.value == 0) {
       code_validate.value = false;
     } else {
       code_validate.value = true;
@@ -61,6 +64,7 @@ class CartReceiptController extends GetxController {
     }
   }
   contract_submit(BuildContext context) {
+    print('select  : ${selected.value}');
     if(contract_number.text.isEmpty) {
       contract_validate.value = true;
     }
@@ -71,23 +75,22 @@ class CartReceiptController extends GetxController {
   }
   submit_button(BuildContext context) {
     is_loading.value = true;
-    API.get_history(
-        selected == 0 ? phone : selected == 1 ? code[codeValue.value] + " | " + emirate[select_value.value].id + " | " + plate_number.text : contract_number.text)
+    print('filter');
+    print('Contact number : ${contract_number.text}');
+    NewApi.filter(
+        selected.value == 0 ? phone : '%',
+        selected.value == 1 ? code[codeValue.value] + " | " + emirate[select_value.value].id + " | " + plate_number.text : '%',
+        selected.value == 2 ? contract_number.text : '%' )
         .then((value) {
-      if (value.length == 0) {
+      print(value.length);
+      if (value.isEmpty) {
         is_loading.value = false;
         TopBar().error_top_bar(context,
           App_Localization.of(context)!.translate("data_not_correct"));
       }else {
-        if(value.first.status != "Received") {
           history.addAll(value);
           is_loading.value = false;
-          in_progress = history.where((i) => i.status!="Received").toList();
-        }else {
-          TopBar().error_top_bar(context,
-                App_Localization.of(context)!.translate("car_received_recently"));
-            is_loading.value = false;
-        }
+          in_progress = history.where((i) => i.receiver == "").toList();
       }
     });
   }
