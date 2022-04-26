@@ -39,10 +39,10 @@ class HistoryView extends StatelessWidget {
                     child: Column(
                       children: [
                         _header(context),
-                        introController.temp.length != 0 || historyController.search.text.isNotEmpty ?
+                        historyController.temp.isNotEmpty || historyController.search.text.isNotEmpty ?
                         Column(
                           children: [
-                            introController.temp.length == 0 ?
+                            historyController.temp.isEmpty?
                                 Column(
                                   children: [
                                     SizedBox(height: 40),
@@ -78,7 +78,7 @@ class HistoryView extends StatelessWidget {
                     ),
                   ),
                   Positioned(
-                      child: introController.is_loading.value?Container(
+                      child: historyController.is_loading.value?Container(
                         width: MediaQuery.of(context).size.width,
                         height: MediaQuery.of(context).size.height,
                         color: AppColors.main.withOpacity(0.6),
@@ -123,10 +123,11 @@ class HistoryView extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
+                    print('ddddddddddddd');
                     homeController.select_nav_bar.value = 1;
                     historyController.search.clear();
-                    introController.temp.clear();
-                    introController.histories.addAll(introController.temp);
+                    historyController.temp.clear();
+                    //historyController.histories.addAll(historyController.temp);
                   },
                   child: Icon(Icons.arrow_back_ios,color: Colors.white,size: 25,),
                 ),
@@ -153,7 +154,7 @@ class HistoryView extends StatelessWidget {
                       hintText: App_Localization.of(context)!.translate("search"),
                       hintStyle: TextStyle(color: AppColors.main3,fontSize: 15),
                     ),
-                    onChanged: introController.search_on_history,
+                    onChanged: historyController.search_on_history,
                   ),
                 ),
               ],
@@ -280,13 +281,13 @@ class HistoryView extends StatelessWidget {
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10
             ),
-            itemCount: introController.done.length,
+            itemCount: historyController.done.length,
             itemBuilder: (BuildContext ctx, index) {
               return GestureDetector(
                   onTap: () {
-                    historyController.get_contract_images(introController.done[index]);
+                    historyController.goToContract(historyController.done[index]);
                   },
-                  child: _done_body(introController.done[index],context)
+                  child: _done_body(historyController.done[index],context)
               );
             }),
       ),
@@ -310,7 +311,8 @@ class HistoryView extends StatelessWidget {
             Container(
               width: MediaQuery.of(context).size.width * 0.5,
               child: Text(
-                history.status,
+                // TODO
+                history.clientName,
                 maxLines: 1,
                 style: TextStyle(
                     overflow: TextOverflow.ellipsis,
@@ -318,7 +320,7 @@ class HistoryView extends StatelessWidget {
                     fontSize: 18),),
             ),
             Text(
-              DateFormat('yyyy-MM-dd').format(DateTime.parse(history.receiveDate)),
+              DateFormat('yyyy-MM-dd').format(DateTime.parse(history.reciveDate.toString())),
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 18),),
@@ -346,7 +348,8 @@ class HistoryView extends StatelessWidget {
                       color: AppColors.green
                   ),
                 ),
-                Text(App_Localization.of(context)!.translate("done"),
+                Text(
+                  App_Localization.of(context)!.translate("done"),
                   style: TextStyle(
                       color: AppColors.green,
                       fontSize: 13
@@ -360,6 +363,7 @@ class HistoryView extends StatelessWidget {
       ),
     );
   }
+
   _in_progress(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(15),
@@ -372,13 +376,13 @@ class HistoryView extends StatelessWidget {
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10
             ),
-            itemCount: introController.in_progress.length,
+            itemCount: historyController.in_progress.length,
             itemBuilder: (BuildContext ctx, index) {
               return GestureDetector(
                   onTap: () {
-                    historyController.get_contract_images(introController.in_progress[index]);
+                    historyController.goToContract(historyController.in_progress[index]);
                   },
-                  child: _in_progress_body(introController.in_progress[index],context)
+                  child: _in_progress_body(historyController.in_progress[index],context)
               );
             }),
       ),
@@ -402,7 +406,7 @@ class HistoryView extends StatelessWidget {
             Container(
               width: MediaQuery.of(context).size.width * 0.5,
               child: Text(
-                history.clientPhone,
+                history.clientName,
               //history.status,
                 maxLines: 1,
                 style: TextStyle(
@@ -411,7 +415,7 @@ class HistoryView extends StatelessWidget {
                     fontSize: 18),),
             ),
             Text(
-              DateFormat('yyyy-MM-dd').format(DateTime.parse(history.deliverDate)),
+              DateFormat('yyyy-MM-dd').format(DateTime.parse(history.deliverDate.toString())),
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 18),),
@@ -469,11 +473,14 @@ class HistoryView extends StatelessWidget {
             itemBuilder: (BuildContext ctx, index) {
               return GestureDetector(
                   onTap: () {
-                    introController.is_loading.value = true;
+                    historyController.is_loading.value = true;
+                    print('-----------------');
+                    print(Global.offline_contract.last.clientName);
+                    print('-----------------');
                     Get.to(()=> NotUploadedHistory(Global.offline_contract[index]))
                     !.then((value) {
-                      introController.get_hirstories_data();
-                      introController.is_loading.value = false;
+                      historyController.getHistory();
+                      historyController.is_loading.value = false;
                     });
                   },
                   child: _not_unploaded_body(Global.offline_contract[index],context)
@@ -562,18 +569,18 @@ class HistoryView extends StatelessWidget {
                 mainAxisSpacing: 10,
                 crossAxisSpacing: 10
             ),
-            itemCount: introController.temp.length,
+            itemCount: historyController.temp.length,
             itemBuilder: (BuildContext ctx, index) {
               return GestureDetector(
                 onTap: () {
-                  historyController.get_contract_images(introController.temp[index]);
+                  // historyController.get_contract_images(introController.temp[index]);
                 },
                 child: Container(
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(25),
                       border: Border.all(
                           width: 2,
-                          color: introController.temp[index].status == "Received" ?
+                          color: historyController.temp[index].receiver != "" ?
                           AppColors.green : AppColors.yellow
                       )
                   ),
@@ -586,7 +593,7 @@ class HistoryView extends StatelessWidget {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.5,
                           child: Text(
-                            introController.temp[index].status,
+                            historyController.temp[index].receiver != "" ? "Received" : "Delivered",
                             maxLines: 1,
                             style: TextStyle(
                                 overflow: TextOverflow.ellipsis,
@@ -594,16 +601,16 @@ class HistoryView extends StatelessWidget {
                                 fontSize: 18),),
                         ),
                         Text(
-                          introController.temp[index].contractNumber,
+                          historyController.temp[index].contractNumber,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               color: AppColors.turquoise,
                               fontSize: 20),),
                         Text(
                           DateFormat('yyyy-MM-dd').format(DateTime.parse(
-                              introController.temp[index].status == "Received" ?
-                              introController.temp[index].receiveDate :
-                                  introController.temp[index].deliverDate
+                              historyController.temp[index].receiver != "" ?
+                              historyController.temp[index].reciveDate.toString() :
+                              historyController.temp[index].deliverDate.toString()
                           )),
                           style: TextStyle(
                               color: Colors.white,
@@ -612,7 +619,7 @@ class HistoryView extends StatelessWidget {
                           child: Divider(
                               thickness: 2,
                               height: 15,
-                              color: introController.temp[index].status == "Received" ?
+                              color: historyController.temp[index].receiver != "" ?
                               AppColors.green : AppColors.yellow
                           ),
                         ),
@@ -624,7 +631,7 @@ class HistoryView extends StatelessWidget {
                               height:  15,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(30),
-                                  color: introController.temp[index].status == "Received" ?
+                                  color: historyController.temp[index].receiver != ""  ?
                                   AppColors.green : AppColors.yellow
                               ),
                             ),
