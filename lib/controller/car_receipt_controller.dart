@@ -77,7 +77,7 @@ class CartReceiptController extends GetxController {
     is_loading.value = true;
     print('filter');
     print('Contact number : ${contract_number.text}');
-    NewApi.filter(
+    NewApi.filterInProgress(
         selected.value == 0 ? phone : '%',
         selected.value == 1 ? code[codeValue.value] + " | " + emirate[select_value.value].id + " | " + plate_number.text : '%',
         selected.value == 2 ? contract_number.text : '%' )
@@ -88,6 +88,7 @@ class CartReceiptController extends GetxController {
         TopBar().error_top_bar(context,
           App_Localization.of(context)!.translate("data_not_correct"));
       }else {
+
           history.addAll(value);
           is_loading.value = false;
           in_progress = history.where((i) => i.receiver == "").toList();

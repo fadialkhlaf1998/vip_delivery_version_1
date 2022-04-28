@@ -37,7 +37,7 @@ class CartReceipt extends StatelessWidget {
                 children: [
                   _header(context),
                   SingleChildScrollView(
-                    physics: NeverScrollableScrollPhysics(),
+                    physics: const NeverScrollableScrollPhysics(),
                     child: cartReceiptController.in_progress.isNotEmpty ?
                     Column(
                       children: [

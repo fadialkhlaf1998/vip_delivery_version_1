@@ -31,15 +31,18 @@ class Login extends StatelessWidget {
           ),
           child: SingleChildScrollView(
             child: !loginController.is_loading.value ?
-            Column(
-              children: [
-                SizedBox(height: 80),
-                _header(context),
-                SizedBox(height: 50),
-                _body(context),
-                SizedBox(height: 50),
-                _login_btn(context),
-              ],
+            Container(
+              height: MediaQuery.of(context).size.height * 0.7,
+              child: Column(
+                children: [
+                  SizedBox(height: 80),
+                  _header(context),
+                  SizedBox(height: 50),
+                  _body(context),
+                  SizedBox(height: 50),
+                  _login_btn(context),
+                ],
+              ),
             ) :
             Container(
               height: MediaQuery.of(context).size.height,
@@ -50,12 +53,12 @@ class Login extends StatelessWidget {
           ),
         ),
       )),
-      floatingActionButton:
-      GestureDetector(
-          onTap: () {
-            //todo something
-          },
-          child: SvgPicture.asset("assets/icons/info.svg",width: 23, height: 23,))
+      //  //     child: SvgPicture.assfloatingActionButton:
+      //       // GestureDetector(
+      //       //     onTap: () {
+      //       //       //todo something
+      //       //     },
+      //      et("assets/icons/info.svg",width: 23, height: 23,))
     );
   }
 

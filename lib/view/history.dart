@@ -1,7 +1,11 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:vip_delivery_version_1/archive/mediatype.dart';
 import 'package:vip_delivery_version_1/const/global.dart';
 import 'package:vip_delivery_version_1/const/app_colors.dart';
 import 'package:vip_delivery_version_1/const/app_localization.dart';
@@ -29,70 +33,75 @@ class HistoryView extends StatelessWidget {
     return Scaffold(
         body: Obx(() {
           return SafeArea(
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              color: AppColors.main,
-              child: Stack(
-                children: [
-                  SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        _header(context),
-                        historyController.temp.isNotEmpty || historyController.search.text.isNotEmpty ?
-                        Column(
-                          children: [
-                            historyController.temp.isEmpty?
-                                Column(
-                                  children: [
-                                    SizedBox(height: 40),
-                                    Icon(Icons.info_outline,color: AppColors.main3,),
-                                    SizedBox(height: 5,),
-                                    Text(
-                                      App_Localization.of(context)!.translate("search_not_match"),
-                                      style: TextStyle(
-                                        color: AppColors.main3
+            child: GestureDetector(
+              onTap: (){
+                FocusManager.instance.primaryFocus?.unfocus();
+              },
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                color: AppColors.main,
+                child: Stack(
+                  children: [
+                    SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          _header(context),
+                          historyController.temp.isNotEmpty || historyController.search.text.isNotEmpty ?
+                          Column(
+                            children: [
+                              historyController.temp.isEmpty?
+                                  Column(
+                                    children: [
+                                      SizedBox(height: 40),
+                                      Icon(Icons.info_outline,color: AppColors.main3,),
+                                      SizedBox(height: 5,),
+                                      Text(
+                                        App_Localization.of(context)!.translate("search_not_match"),
+                                        style: TextStyle(
+                                          color: AppColors.main3
+                                        ),
                                       ),
-                                    ),
-                                  ],
-                                ) :
-                           Column(
-                             children: [
-                               _search_list(context),
-                               Container(
-                                 width: MediaQuery.of(context).size.width * 0.85,
-                                 child: Divider(
-                                     thickness: 2,
-                                     height: 15,
-                                     color: AppColors.main3
+                                    ],
+                                  ) :
+                             Column(
+                               children: [
+                                 _search_list(context),
+                                 Container(
+                                   width: MediaQuery.of(context).size.width * 0.85,
+                                   child: Divider(
+                                       thickness: 2,
+                                       height: 15,
+                                       color: AppColors.main3
+                                   ),
                                  ),
-                               ),
-                               _not_uploaded(context)
-                             ],
-                           )
-                          ],
-                        ) :
-                        _body(context),
-                        SizedBox(height: 40),
-                      ],
+                                 _not_uploaded(context)
+                               ],
+                             )
+                            ],
+                          ) :
+                          _body(context),
+                          SizedBox(height: 40),
+                        ],
+                      ),
                     ),
-                  ),
-                  Positioned(
-                      child: historyController.is_loading.value?Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height,
-                        color: AppColors.main.withOpacity(0.6),
-                        child: Center(
-                          child: CircularProgressIndicator(color: AppColors.main3),
-                        ),
-                      ):Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 0,
-                        color: Colors.blue,
-                      ))
-                ],
-              ),
-              ),
+                    Positioned(
+                        child: historyController.is_loading.value?Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          color: AppColors.main.withOpacity(0.6),
+                          child: Center(
+                            child: CircularProgressIndicator(color: AppColors.main3),
+                          ),
+                        ):Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 0,
+                          color: Colors.blue,
+                        ))
+                  ],
+                ),
+                ),
+            ),
           );
         })
     );
@@ -104,7 +113,7 @@ class HistoryView extends StatelessWidget {
         Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height * 0.28,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(15),
                   bottomRight: Radius.circular(15)),
@@ -114,53 +123,175 @@ class HistoryView extends StatelessWidget {
               )
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(15),
-          child: Container(
-            height: MediaQuery.of(context).size.height * 0.16,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    print('ddddddddddddd');
-                    homeController.select_nav_bar.value = 1;
-                    historyController.search.clear();
-                    historyController.temp.clear();
-                    //historyController.histories.addAll(historyController.temp);
-                  },
-                  child: Icon(Icons.arrow_back_ios,color: Colors.white,size: 25,),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.8,
-                  child: TextField(
-                    style: TextStyle(color: Colors.white),
-                    controller: historyController.search,
-                    cursorColor: AppColors.main3,
-                    textAlignVertical: TextAlignVertical.center,
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: AppColors.main3.withOpacity(0.4),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide(color: Colors.transparent),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(25),
-                        borderSide: BorderSide(color: Colors.transparent),
-                      ),
-                      contentPadding: EdgeInsets.all(5),
-                      prefixIcon: Icon(Icons.search,color: AppColors.main3),
-                      hintText: App_Localization.of(context)!.translate("search"),
-                      hintStyle: TextStyle(color: AppColors.main3,fontSize: 15),
+        Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 15, right: 15,left: 15),
+              child: Container(
+                height: MediaQuery.of(context).size.height * 0.13,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        if(historyController.viewSearchOption.isTrue){
+                          historyController.viewSearchOption.value = false;
+                          FocusManager.instance.primaryFocus?.unfocus();
+                        }else{
+                          homeController.select_nav_bar.value = 1;
+                          historyController.search.clear();
+                          historyController.temp.clear();
+                        }
+                        //historyController.histories.addAll(historyController.temp);
+                      },
+                      child: Icon(Icons.arrow_back_ios,color: Colors.white,size: 25,),
                     ),
-                    onChanged: historyController.search_on_history,
-                  ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: TextField(
+                        style: const TextStyle(color: Colors.white),
+                        controller: historyController.search,
+                        cursorColor: AppColors.main3,
+                        textAlignVertical: TextAlignVertical.center,
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: AppColors.main3.withOpacity(0.4),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: BorderSide(color: Colors.transparent),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(25),
+                            borderSide: BorderSide(color: Colors.transparent),
+                          ),
+                          contentPadding: EdgeInsets.all(5),
+                          prefixIcon: Icon(Icons.search,color: AppColors.main3),
+                          hintText: App_Localization.of(context)!.translate("search"),
+                          hintStyle: TextStyle(color: AppColors.main3,fontSize: 15),
+                        ),
+                        onChanged: historyController.search_on_history,
+                        onTap:(){
+                          historyController.viewSearchOption.value = true;
+                        },
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
-          ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height * 0.12,
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 500),
+                child:  historyController.viewSearchOption.value
+                    ? Container(
+                  width: MediaQuery.of(context).size.width *  0.9,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      SizedBox(width: 20,),
+                      GestureDetector(
+                        onTap: (){
+                          historyController.choosePhoneSearchOption();
+                        },
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 300),
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          height: MediaQuery.of(context).size.width * 0.2,
+                          decoration: BoxDecoration(
+                            color: historyController.phoneSearchOption.value ? AppColors.main2 : AppColors.main2.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                                color: historyController.phoneSearchOption.value ? AppColors.turquoise : Colors.transparent,
+                                width: 1)
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset("assets/icons/phone.svg",width: 25,height: 25),
+                              SizedBox(height: 7),
+                              Text(
+                                App_Localization.of(context)!.translate("client_phone"),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12
+                                ),),
+                            ],
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: (){
+                          historyController.choosePlateNumberSearchOption();
+                        },
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 300),
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          height: MediaQuery.of(context).size.width * 0.2,
+                          decoration: BoxDecoration(
+                              color: historyController.plateNumberOption.value ? AppColors.main2 : AppColors.main2.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(
+                                  color: historyController.plateNumberOption.value ? AppColors.turquoise : Colors.transparent,
+                                  width: 1)
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset("assets/icons/plate.svg",width: 20,height: 20),
+                              SizedBox(height: 10),
+                              Text(
+                                App_Localization.of(context)!.translate("plate_number"),
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12
+                                ),),
+                            ],
+                          ),
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: (){
+                          historyController.chooseContractSearchOption();
+                        },
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 300),
+                          width: MediaQuery.of(context).size.width * 0.2,
+                          height: MediaQuery.of(context).size.width * 0.2,
+                          decoration: BoxDecoration(
+                              color: historyController.contractSearchOption.value ? AppColors.main2 : AppColors.main2.withOpacity(0.5),
+                              borderRadius: BorderRadius.circular(5),
+                              border: Border.all(
+                                  color: historyController.contractSearchOption.value ? AppColors.turquoise : Colors.transparent,
+                                  width: 1)
+                          ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset("assets/icons/contract.svg",width: 25,height: 25),
+                              SizedBox(height: 5),
+                              Text(
+                                App_Localization.of(context)!.translate("contract_number"),
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    overflow: TextOverflow.ellipsis,
+                                    color: Colors.white,
+                                    fontSize: 12
+                                ),),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+                    : Center(),
+              ),
+            )
+          ],
         ),
+
       ],
     );
   }
@@ -573,7 +704,9 @@ class HistoryView extends StatelessWidget {
             itemBuilder: (BuildContext ctx, index) {
               return GestureDetector(
                 onTap: () {
-                  // historyController.get_contract_images(introController.temp[index]);
+                   //historyController.get_contract_images(introController.temp[index]);
+                  FocusManager.instance.primaryFocus?.unfocus();
+                  historyController.goToContract(historyController.temp[index]);
                 },
                 child: Container(
                   decoration: BoxDecoration(

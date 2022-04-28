@@ -198,6 +198,35 @@ class NewApi {
     }
   }
 
+  static Future<List<History>> filterInProgress(String clientPhone, String carPlate, String contractNumber) async {
+    var headers = {
+      'Content-Type': 'application/json',
+      'Cookie': cookie
+    };
+    var request = http.Request('POST', Uri.parse(NewApi.url + '/api/contract-in-progress'));
+    request.body = json.encode({
+      "client_phone": clientPhone,
+      "car_plate": carPlate,
+      "contract_number": contractNumber
+    });
+    request.headers.addAll(headers);
+
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
+      var jsonString = await response.stream.bytesToString();
+      print(jsonString);
+      var list = jsonDecode(jsonString) as List;
+      List<History> historyList = <History>[];
+      for(int i=0;i<list.length;i++){
+        historyList.add(History.fromMap(list[i]));
+      }
+      return historyList;    }
+    else {
+      return <History>[];
+    }
+  }
+
   static Future<bool> upload_offLine_history(OfflineHistory offlineHistory) async {
     print('offline history id ---------------- : ${offlineHistory.id}');
     try {

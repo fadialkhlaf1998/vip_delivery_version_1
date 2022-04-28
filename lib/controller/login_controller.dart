@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:vip_delivery_version_1/const/app_localization.dart';
 import 'package:vip_delivery_version_1/const/global.dart';
+import 'package:vip_delivery_version_1/const/top_bar.dart';
 import 'package:vip_delivery_version_1/controller/api.dart';
 import 'package:vip_delivery_version_1/controller/history_controller.dart';
 import 'package:vip_delivery_version_1/controller/new_api.dart';
@@ -33,9 +35,10 @@ class LoginController extends GetxController {
   }
 
   newLogin(BuildContext context){
+    is_loading.value = true;
     NewApi.login(email.text, password.text).then((value){
       if(value){
-        is_loading.value = true;
+        //is_loading.value = true;
         NewApi.getChauffeur().then((value) {
           Global.chauffeur.addAll(value);
           NewApi.getMedia().then((signatures) {
@@ -47,9 +50,10 @@ class LoginController extends GetxController {
         });
 
       }else{
-        is_loading.value = false;
-
         print('Field');
+        is_loading.value = false;
+        TopBar().error_top_bar(context,
+            App_Localization.of(context)!.translate("wrong_email_password"));
       }
     });
   }

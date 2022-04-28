@@ -20,6 +20,10 @@ class HistoryController extends GetxController {
 
   var is_loading = true.obs;
 
+  RxBool viewSearchOption = false.obs;
+  RxBool phoneSearchOption = false.obs;
+  RxBool plateNumberOption = false.obs;
+  RxBool contractSearchOption = false.obs;
 
   @override
   void onInit() {
@@ -82,15 +86,55 @@ class HistoryController extends GetxController {
       return;
     }
     else {
-      histories.forEach((h) {
-        if(h.contractNumber.contains(query) || h.carPlate.contains(query) ||
-            h.clientPhone.contains(query)) {
-          temp.add(h);
-          print(temp.length);
-        }
-      });
+      if (phoneSearchOption.value){
+        temp.clear();
+        histories.forEach((h) {
+          if(h.clientPhone.contains(query)) {
+            temp.add(h);
+            print(temp.length);
+          }
+        });
+      }else if (plateNumberOption.value){
+        temp.clear();
+        histories.forEach((h) {
+          if(h.carPlate.contains(query)) {
+            temp.add(h);
+            print(temp.length);
+          }
+        });
+      }else if (contractSearchOption.value){
+        temp.clear();
+        histories.forEach((h) {
+          if(h.contractNumber.contains(query)){
+            temp.add(h);
+            print(temp.length);
+          }
+        });
+      }
     }
   }
+
+  choosePhoneSearchOption(){
+    search.clear();
+    phoneSearchOption.value = true;
+    plateNumberOption.value = false;
+    contractSearchOption.value = false;
+  }
+
+  choosePlateNumberSearchOption(){
+    search.clear();
+    phoneSearchOption.value = false;
+    plateNumberOption.value = true;
+    contractSearchOption.value = false;
+  }
+
+  chooseContractSearchOption(){
+    search.clear();
+    phoneSearchOption.value = false;
+    plateNumberOption.value = false;
+    contractSearchOption.value = true;
+  }
+
 
 
 }
