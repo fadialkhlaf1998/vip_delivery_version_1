@@ -51,7 +51,10 @@ class LoginController extends GetxController {
 
       }else{
         print('Field');
+        print(password.text);
         is_loading.value = false;
+        password.clear();
+        email.clear();
         TopBar().error_top_bar(context,
             App_Localization.of(context)!.translate("wrong_email_password"));
       }

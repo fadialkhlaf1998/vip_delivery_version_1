@@ -27,6 +27,8 @@
   "not_uploaded": "NOT UPLOADED",
   "no_data" : "no data here",
   "search_not_match" : "The search does not match your input",
+  "choose_search_option" : "You should choose search option",
+  "please_enter_the_value_you_went_to_search_for" : "Please enter the value you want to search for",
 
 
   "5": "*********** Contract ***********",

@@ -32,7 +32,7 @@ class Login extends StatelessWidget {
           child: SingleChildScrollView(
             child: !loginController.is_loading.value ?
             Container(
-              height: MediaQuery.of(context).size.height * 0.7,
+              height: MediaQuery.of(context).size.height * 0.8,
               child: Column(
                 children: [
                   SizedBox(height: 80),

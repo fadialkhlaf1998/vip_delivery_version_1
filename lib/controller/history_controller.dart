@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:vip_delivery_version_1/archive/plate.dart';
 import 'package:vip_delivery_version_1/const/global.dart';
 import 'package:vip_delivery_version_1/controller/intro_controller.dart';
 import 'package:vip_delivery_version_1/controller/new_api.dart';
@@ -24,6 +26,23 @@ class HistoryController extends GetxController {
   RxBool phoneSearchOption = false.obs;
   RxBool plateNumberOption = false.obs;
   RxBool contractSearchOption = false.obs;
+  RxList code = ["Select Code","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"].obs;
+  RxList code2 = ["اختر رمز","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"].obs;
+  var codeValue = 0.obs;
+  TextEditingController plate_number = TextEditingController();
+  List <Plate> emirate = [
+    Plate("assets/emirate/abu_dhabi.svg","ABU DHABI"),
+    Plate("assets/emirate/ajman.svg","AJMAN"),
+    Plate("assets/emirate/dubai.svg","DUBAI"),
+    Plate("assets/emirate/fujairah.svg","FUJAIRAH"),
+    Plate("assets/emirate/ras_al_khaimah.svg","RAS AL KHAIMAH"),
+    Plate("assets/emirate/sharjah.svg","SHARJAH"),
+    Plate("assets/emirate/um_al_quwain.svg","UMM AL QUWAIN"),
+  ].obs;
+  var select_value = 0.obs;
+  var codeValue2 = "A".obs;
+  var code_validate = true.obs;
+
 
   @override
   void onInit() {
@@ -114,25 +133,44 @@ class HistoryController extends GetxController {
     }
   }
 
+  searchPlateNumber(String query){
+    temp.clear();
+    String finalResult = code[codeValue.value] + ' | ' +  emirate[select_value.value].id.toLowerCase() + ' | ' + query;
+    print(finalResult);
+
+    histories.forEach((element) {
+      if(element.carPlate.contains(finalResult)){
+        temp.add(element);
+      }
+    });
+    print(temp.length);
+  }
+
   choosePhoneSearchOption(){
     search.clear();
+    temp.clear();
     phoneSearchOption.value = true;
     plateNumberOption.value = false;
     contractSearchOption.value = false;
+    plate_number.clear();
   }
 
   choosePlateNumberSearchOption(){
     search.clear();
+    temp.clear();
     phoneSearchOption.value = false;
     plateNumberOption.value = true;
     contractSearchOption.value = false;
+    plate_number.clear();
   }
 
   chooseContractSearchOption(){
     search.clear();
+    temp.clear();
     phoneSearchOption.value = false;
     plateNumberOption.value = false;
     contractSearchOption.value = true;
+    plate_number.clear();
   }
 
 

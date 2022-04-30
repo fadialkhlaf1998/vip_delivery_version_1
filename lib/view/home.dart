@@ -90,6 +90,7 @@ class Home extends StatelessWidget {
                   introController.temp.clear();
                   introController.histories.addAll(introController.temp);
                   historyController.search.clear();
+                  historyController.viewSearchOption.value = false;
                 },
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,

@@ -27,7 +27,8 @@
   "not_uploaded": "غير مرفوعة",
   "no_data" : "لا توجد بيانات هنا",
   "search_not_match" : "البحث لا يتطابق مع المدخلات الخاصة بك",
-
+  "choose_search_option" : "يجب عليك اختيار خيار البحث",
+  "please_enter_the_value_you_went_to_search_for" : "الرجاء ادخال القيمة التي تريد البحث عنها",
 
   "5": "*********** العقد ***********",
   "contract": "العقد",
