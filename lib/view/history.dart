@@ -192,6 +192,7 @@ class HistoryView extends StatelessWidget {
                           historyController.plateNumberOption.value = false;
                           historyController.plate_number.clear();
                         }else{
+                          historyController.plateNumberOption.value = false;
                           homeController.select_nav_bar.value = 1;
                           historyController.search.clear();
                           historyController.temp.clear();
