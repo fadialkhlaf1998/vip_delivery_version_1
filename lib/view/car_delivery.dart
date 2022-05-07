@@ -102,7 +102,6 @@ class CarDelivery extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         FocusManager.instance.primaryFocus?.unfocus();
-
         carDeliveryController.driver_verification_submit(context);
       },
       child: Container(
@@ -390,7 +389,7 @@ class CarDelivery extends StatelessWidget {
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5),
                   border: Border.all(
-                      color: carDeliveryController.validate.value && carDeliveryController.plate_number.text.isEmpty ?
+                      color: carDeliveryController.validate.value && (carDeliveryController.plate_number.text.isEmpty || carDeliveryController.plate_number.text.length < 5) ?
                       Colors.red : Colors.black87
                   )
               ),
@@ -409,7 +408,10 @@ class CarDelivery extends StatelessWidget {
                   ),
                   hintText: App_Localization.of(context)!.translate("plate_number"),
                   hintStyle: TextStyle(color: Colors.black87,fontSize: 15),
+                  counterText: '',
                 ),
+                keyboardType: TextInputType.number,
+                maxLength: 5,
               ),
             ),
           ],

@@ -218,27 +218,13 @@ class SignatureController extends GetxController {
       is_loading.value = true;
       TopBar().error_top_bar(context,
           App_Localization.of(context)!.translate("check_phone"));
-      Get.offAll(()=> CarDelivery());
+      Global.offline_contract.removeLast();
+       Get.back();
+       Get.back();
+      //Get.offAll(()=> CarDelivery());
     }else {
       try{
         is_loading.value = true;
-        // Global.offline_contract.add(OfflineHistory(
-        //   id: -1,
-        //   clientName: carDeliveryController.client_name.text,
-        //   clientPhone: carDeliveryController.phone,
-        //   contractNumber: carDeliveryController.contract_number.text,
-        //   carPlate: carDeliveryController.code[carDeliveryController.codeValue.value] + " | " + carDeliveryController.emirate[carDeliveryController.select_value.value].id + " | " + carDeliveryController.plate_number.text,
-        //   deliveredId: int.parse(carDeliveryController.driverNameValue.value),
-        //   delivered: Global.get_driver_name_by_id(carDeliveryController.driverNameValue.toString()),
-        //   receiverId: -1,
-        //   receiver: "",
-        //   statusId: 1,
-        //   status: "Deliver",
-        //   deliverDate: DateTime.now().toString(),
-        //   receiveDate: "",
-        //   media: carDeliveryController.media,
-        //   mediaTypeId: carDeliveryController.mediaTypeId,
-        // ));
         Global.save_offline_contract();
         success.value = true;
         TopBar().success_top_bar(context, App_Localization.of(context)!.translate("saved_successfully"));

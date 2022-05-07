@@ -97,9 +97,10 @@ class CarDeliveryController extends GetxController {
     } else {
       code_validate.value = true;
     }
+
     if(client_name.text.isEmpty || phone_number.text.isEmpty ||
         contract_number.text.isEmpty  ||
-        plate_number.text.isEmpty || driverNameValue.value == false) {
+        plate_number.text.isEmpty || plate_number.text.length < 5 || driverNameValue.value == false) {
       validate.value = true;
     }
     else {

@@ -262,7 +262,6 @@ class Home extends StatelessWidget {
                       child: SvgPicture.asset("assets/picking/car-delivery.svg"),
                     ),
                   ),
-                  SizedBox(width: 2,),
                   Text(
                     App_Localization.of(context)!.translate("car_delivery"),
                     style: TextStyle(color: Colors.white,fontSize: 25),),
