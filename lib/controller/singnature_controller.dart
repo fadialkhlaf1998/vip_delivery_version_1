@@ -96,7 +96,7 @@ class SignatureController extends GetxController {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                clear_textfields();
+                                // clear_textfields();
                                 //TODO
                                 /** Upload now Function */
                                 upload_now_button(context);
@@ -202,6 +202,7 @@ class SignatureController extends GetxController {
                   success.value = true;
                   TopBar().success_top_bar(
                       context,App_Localization.of(context)!.translate("uploaded_successfully"));
+                  clear_textfields();
                   historyController.getHistory();
                   Get.offAll(() => Home());
                 } else {
