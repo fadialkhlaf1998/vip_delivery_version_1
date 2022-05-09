@@ -81,13 +81,13 @@ class Contract extends StatelessWidget {
                       fontSize: 25
                   ),
                 ),
-                historyController.introController.temp.length != 0 || historyController.search.text.isNotEmpty ?
+                historyController.temp.length != 0 || historyController.search.text.isNotEmpty ?
                 Container(
                   width: 20,
                   height: 20,
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: historyController.select_history.value == 0 ?
+                      color: contract.receiver != "" ?
                       AppColors.green : AppColors.yellow
                   ),
                 ) :

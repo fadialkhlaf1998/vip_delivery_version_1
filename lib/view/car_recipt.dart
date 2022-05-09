@@ -116,22 +116,27 @@ class CartReceipt extends StatelessWidget {
           cartReceiptController.contract_submit(context);
         }
       },
-      child: Container(
-        width: MediaQuery.of(context).size.width * 0.9,
-        height: 50,
-        decoration: BoxDecoration(
-            color: AppColors.turquoise,
-            borderRadius: BorderRadius.circular(5)
-        ),
-        child: Center(
-          child: Text(
-            App_Localization.of(context)!.translate("search2"),
-            style: TextStyle(
-                color: Colors.white,
-                fontSize: 18
+      child: Column(
+        children: [
+          Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            height: 50,
+            decoration: BoxDecoration(
+                color: AppColors.turquoise,
+                borderRadius: BorderRadius.circular(5)
+            ),
+            child: Center(
+              child: Text(
+                App_Localization.of(context)!.translate("search2"),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18
+                ),
+              ),
             ),
           ),
-        ),
+          SizedBox(height: 40),
+        ],
       ),
     );
   }

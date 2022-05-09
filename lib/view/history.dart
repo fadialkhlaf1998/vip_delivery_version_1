@@ -789,7 +789,7 @@ class HistoryView extends StatelessWidget {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.5,
                           child: Text(
-                            historyController.temp[index].receiver != "" ? "Received" : "Delivered",
+                            historyController.temp[index].clientPhone,
                             maxLines: 1,
                             style: TextStyle(
                                 overflow: TextOverflow.ellipsis,
@@ -831,12 +831,14 @@ class HistoryView extends StatelessWidget {
                                   AppColors.green : AppColors.yellow
                               ),
                             ),
-                            // Text(App_Localization.of(context)!.translate("done"),
-                            //   style: TextStyle(
-                            //       color: AppColors.green,
-                            //       fontSize: 13
-                            //   ),
-                            // ),
+
+                            Text(
+                              historyController.temp[index].receiver != "" ? App_Localization.of(context)!.translate("done") : App_Localization.of(context)!.translate("in_progress"),
+                              style: TextStyle(
+                                  color: historyController.temp[index].receiver != "" ? AppColors.green : AppColors.yellow,
+                                  fontSize: 15
+                              ),
+                            ),
                           ],
                         ),
                         SizedBox(height: 5)
