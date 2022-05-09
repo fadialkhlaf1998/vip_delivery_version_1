@@ -183,35 +183,46 @@ class SignatureController extends GetxController {
     );
   }
   upload_now_button(BuildContext context) async {
-    try{
-      is_loading.value = true;
-      NewApi.internet().then((internet) {
-        if(internet){
-          NewApi.upload_offLine_history(Global.offline_contract.last).then((value) {
-            if(value){
-              is_loading.value = true;
-              success.value = true;
-              TopBar().success_top_bar(
-                  context,App_Localization.of(context)!.translate("uploaded_successfully"));
+
+      if(Global.offline_contract.last.clientPhone.length < 10){
+        is_loading.value = true;
+        TopBar().error_top_bar(context,
+            App_Localization.of(context)!.translate("check_phone"));
+        Global.offline_contract.removeLast();
+        Get.back();
+        Get.back();
+      }else{
+        try{
+          is_loading.value = true;
+          NewApi.internet().then((internet) {
+            if(internet){
+              NewApi.upload_offLine_history(Global.offline_contract.last).then((value) {
+                if(value){
+                  is_loading.value = true;
+                  success.value = true;
+                  TopBar().success_top_bar(
+                      context,App_Localization.of(context)!.translate("uploaded_successfully"));
                   historyController.getHistory();
                   Get.offAll(() => Home());
-            } else {
-              is_loading.value = true;
-              TopBar().error_top_bar(
-                context,App_Localization.of(context)!.translate("upload_failed"));
-                Get.offAll(() => Home());
+                } else {
+                  is_loading.value = true;
+                  TopBar().error_top_bar(
+                      context,App_Localization.of(context)!.translate("upload_failed"));
+                  Get.offAll(() => Home());
+                }
+              });
+            }else {
+              Get.to(() => NoInternet())!.then((value) {
+                // upload_now_button(context);
+              });
             }
           });
-        }else {
-          Get.to(() => NoInternet())!.then((value) {
-           // upload_now_button(context);
-          });
+        }catch(e){
+          TopBar().error_top_bar(
+              context,"error");
         }
-      });
-    }catch(e){
-      TopBar().error_top_bar(
-          context,"error");
-    }
+      }
+
   }
   upload_save_latter_button(BuildContext context) async {
     if(Global.offline_contract.last.clientPhone.length<10){
