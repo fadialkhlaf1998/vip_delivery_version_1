@@ -67,7 +67,6 @@ class CarDeliveryController extends GetxController {
     });
   }
   Future get_vedio_camera() async {
-    var status = await Permission.camera.status;
      image_picker.pickVideo(source: ImageSource.camera).then((recordedVideo){
        videos.add(ImageType(File(recordedVideo!.path), false, Global.get_media_type("5")));
       get_vedio_image(videos.last);

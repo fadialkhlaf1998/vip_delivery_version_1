@@ -54,7 +54,6 @@ dependencies:
   chewie: ^1.2.2
   path_provider: ^2.0.9
   permission_handler: ^9.2.0
-  camera: ^0.9.4+24
 
 dev_dependencies:
   flutter_test:
