@@ -4,6 +4,7 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 import 'package:vip_delivery_version_1/const/global.dart';
@@ -51,6 +52,10 @@ class CarDeliveryController extends GetxController {
   List<int> mediaTypeId=<int>[];
 
   Future get_image_camera() async {
+    var status = await Permission.camera.status;
+    if(status.isDenied & Platform.isIOS){
+      print('denied------------------- camera image');
+    }
     image_picker.pickImage(source: ImageSource.camera, imageQuality: 85).then((recordedImage) {
       imgs.add(ImageType(File(recordedImage!.path), false, Global.get_media_type("")));
 
@@ -62,7 +67,8 @@ class CarDeliveryController extends GetxController {
     });
   }
   Future get_vedio_camera() async {
-     image_picker.pickVideo(source: ImageSource.camera).then((recordedVideo) {
+    var status = await Permission.camera.status;
+     image_picker.pickVideo(source: ImageSource.camera).then((recordedVideo){
        videos.add(ImageType(File(recordedVideo!.path), false, Global.get_media_type("5")));
       get_vedio_image(videos.last);
     });

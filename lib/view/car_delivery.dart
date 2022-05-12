@@ -14,9 +14,7 @@ import 'package:vip_delivery_version_1/const/app_colors.dart';
 import 'package:vip_delivery_version_1/const/app_localization.dart';
 import 'package:vip_delivery_version_1/controller/car_delivery_controller.dart';
 import 'package:vip_delivery_version_1/controller/edit_contract_controller.dart';
-import 'package:vip_delivery_version_1/controller/login_controller.dart';
 import 'package:vip_delivery_version_1/view/home.dart';
-import 'package:vip_delivery_version_1/view/show_vedio.dart';
 
 class CarDelivery extends StatelessWidget {
   CarDelivery({Key? key}) : super(key: key);

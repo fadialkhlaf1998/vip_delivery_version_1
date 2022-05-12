@@ -51,7 +51,6 @@ class HistoryController extends GetxController {
   }
 
   goToContract(History contract) async {
-    print(contract.delivered);
     Get.to(()=>Contract(contract));
   }
 
@@ -136,14 +135,14 @@ class HistoryController extends GetxController {
   searchPlateNumber(String query){
     temp.clear();
     String finalResult = code[codeValue.value] + ' | ' +  emirate[select_value.value].id.toLowerCase() + ' | ' + query;
-    print(finalResult);
+    // print(finalResult);
 
     histories.forEach((element) {
       if(element.carPlate.contains(finalResult)){
         temp.add(element);
       }
     });
-    print(temp.length);
+    // print(temp.length);
   }
 
   choosePhoneSearchOption(){
