@@ -1,4 +1,4 @@
-package com.example.vip_delivery_version_1
+package com.maxart.vip_delivery_version_1
 
 import io.flutter.embedding.android.FlutterActivity
 
