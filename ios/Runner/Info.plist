@@ -7,7 +7,7 @@
     <key>NSMicrophoneUsageDescription</key>
     <string>App needs access to microphone for record video</string>
     <key>NSCameraUsageDescription</key>
-    <string>To capture photo please grant camera access</string>
+    <string>We need access to the camera to compare the photos when delivering or receiving a car</string>
     <key>LSApplicationQueriesSchemes</key>
     <array>
         <string>tel</string>
